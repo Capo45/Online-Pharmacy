@@ -3,14 +3,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
  session_start();
-$db_server="127.0.0.1";
-$db_user = "Capo";
-$db_pass = "Meli9464.$";
-$db_name="mcpharm";
-$port=3306;
-$conn="";
-
-$conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+ $config = require 'config.php';  // Or use getenv() if using .env
+ $db_host = $config['DB_HOST'];
+ $db_user = $config['DB_USER'];
+ $db_password = $config['DB_PASSWORD'];
+ $db_name = $config['DB_NAME'];
+ $db_port = $config['DB_PORT'];  // Use the port, even if it's 3306
+ 
+ $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
  try {
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
