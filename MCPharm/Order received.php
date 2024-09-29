@@ -11,8 +11,7 @@ $db_name = $config['DB_NAME'];
 $db_port = $config['DB_PORT']; 
  $conn="";
 
-$conn=new mysqli($db_server ,
- $db_user , $db_pass , $db_name , $port);
+$conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
 
  $details="SELECT * FROM receipts";
  $run = mysqli_query($conn,$details);

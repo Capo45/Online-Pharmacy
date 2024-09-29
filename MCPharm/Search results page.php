@@ -10,8 +10,7 @@ $db_name="mcpharm";
 $port=3306;
 $conn="";
 
-$conn=new mysqli($db_server ,
- $db_user , $db_pass , $db_name , $port);
+$conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
  try {
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
