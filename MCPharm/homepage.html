@@ -2,53 +2,56 @@
 <html>
     <head>
         <title>Online Pharmacy website</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
+        <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
+        <meta name="author" content="MCPharm">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
-     
-
     </head>
     
     <body>
         <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
         <section class="navigation_bar">
             <table class="strp">
-             <tr>
-                 <th id="logo"><a href="homepage.html"><img src="Images/Navigation bar/logo.png" style="width: 5.938rem;height: 4.375rem;"></a></th>
-                 <th class="navheading"><h2><a href="#" style="text-decoration: none; color:#000000;">Medications</a></h2>
-                 <ul id="submenu1" class="submenus">
-                     <li>Pain relief</li>
-                     <li>Digestive Health</li>
-                     <li>Allergy & Cold</li>
-                     <li>Chronic Condition Management</li>
-                 </ul>
-                 </th>
-                 <th  class="navheading"><a href="#" style="text-decoration: none; color:#000000;"><h2>Supplements</h2></a>
-                     <ul id="submenu2" class="submenus">
-                         <li>Multi-Vitamins</li>
-                         <li>Minerals</li>
-                         <li>Herbal Supplements</li>
-                         <li>Fitness & Sports Nutrition</li> 
-                     </ul></th>
-                 <th class="navheading"><a href="#" style="text-decoration: none; color:#000000;"><h2>Dental Health</h2></a>
-                     <ul id="submenu3" class="submenus">
-                         <li>Toothpaste</li>
-                         <li>Mouth Wash</li>
-                         <li>Dental floss</li>
-                         <li>Toothbrushes</li>
-                     </ul></th>
-                 <th class="navheading"><a href="#" style="text-decoration: none; color:#000000;"><h2>Cosmetics</h2></a>
-                     <ul id="submenu4" class="submenus">
-                         <li>Skin Care Products</li>
-                         <li>Makeup</li>
-                         <li>Fragrances</li>
-                         <li><a href="product view page.html">Hair dyes</a></li> 
-                     </ul></th>
-                <form action="Search Result.php" method="GET">
-                    <th><div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
-                     class="searchbar" width="20rem">
-                        </div></th>
-                    </form> 
-                <th><a href="#"><img src="Images/Navigation bar/shopping cart icon.png"  style="width: 1.7rem; height: 1.7rem;"></a></th>
-               </tr>
+                <tr>
+                    <th id="logo"><a href="homepage.html"><img src="Images/Navigation bar/logo.png" style="width: 5.938rem;height: 4.375rem;"></a></th>
+                    <th class="navheading"><h2><a href="Search results page.php?category=Medications">Medications</a></h2>
+                    <ul id="submenu1" class="submenus">
+                        <li><a href="Search results page.php?sub_category=Pain relief">Pain relief</a></li>
+                        <li><a href="Search results page.php?sub_category=Digestive Health">Digestive Health</a></li>
+                        <li><a href="Search results page.php?sub_category=Allergy & Cold">Allergy & Cold</a></li>
+                        <li><a href="Search results page.php?sub_category=Chronic Condition Management">Chronic Condition Management</a></li>
+                    </ul>
+                    </th>
+                    <th  class="navheading"><h2><a href="Search results page.php?category=Supplements">Supplements</a></h2>
+                        <ul id="submenu2" class="submenus">
+                            <li><a href="Search results page.php?sub_category=Multi-Vitamins">Multi-Vitamins</a></li>
+                            <li><a href="Search results page.php?sub_category=Minerals">Minerals</a></li>
+                            <li><a href="Search results page.php?sub_category=Herbal Supplements">Herbal Supplements</a></li>
+                            <li><a href="Search results page.php?sub_category=Fitness & Sports Nutrition">Fitness & Sports Nutrition</a></li> 
+                        </ul></th>
+                    <th class="navheading"><h2><a href="Search results page.php?category=Dental">Dental Health</a></h2>
+                        <ul id="submenu3" class="submenus">
+                            <li><a href="Search results page.php?sub_category=Toothpaste">Toothpaste</a></li>
+                            <li><a href="Search results page.php?sub_category=Mouth Wash">Mouth Wash</a></li>
+                            <li><a href="Search results page.php?sub_category=Dental floss">Dental floss</a></li>
+                            <li><a href="Search results page.php?sub_category=Toothbrushes">Toothbrushes</a></li>
+                        </ul></th>
+                    <th class="navheading"><h2><a href="Search results page.php?category=cosmetics">Cosmetics</a></h2>
+                        <ul id="submenu4" class="submenus">
+                            <li><a href="Search results page.php?sub_category=Skin Care Products">Skin Care Products</a></li>
+                            <li><a href="Search results page.php?sub_category=Makeup">Makeup</a></li>
+                            <li><a href="Search results page.php?sub_category=Fragrances">Fragrances</a></li>
+                            <li><a href="Search results page.php?sub_category=Hair dyes">Hair dyes</a></li> 
+                        </ul></th>
+                        <form action="Search results page.php" method="GET">
+                       <th><div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
+                        class="searchbar">
+                           </div></th>
+                       </form> 
+                        <th><a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  style="width: 1.7rem; height: 1.7rem;"></a></th>
+                  </tr>
             </table>
      </section>
         
@@ -63,7 +66,7 @@
                 <div class="slider-nav">
                     <a href="#slide1"></a>
                     <a href="#slide2"></a>
-                    <a href="slide3"></a>
+                    <a href="#slide3"></a>
                 </div>
             </div>
         </section>
