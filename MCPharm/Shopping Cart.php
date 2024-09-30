@@ -12,6 +12,16 @@ $db_port = $config['DB_PORT'];
 $GLOBALS['conn']="";
 
 $GLOBALS['conn']=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+function generateRandomUserId() {
+  return random_int(100000, 999999); // Generates a random 6-digit number
+}
+
+if(!isset($_SESSION['user_id'])){
+  $_SESSION['user_id']=generateRandomUserId(); 
+  $stmt = $mysqli->prepare("INSERT INTO users (user_id) VALUES (?)");
+  $stmt->bind_param("i", $_SESSION['user_id']);
+}
+$user=$_SESSION['user_id'];
   
 if($_SERVER["REQUEST_METHOD"]=="POST"){
   $action=$_POST['action'];
@@ -19,19 +29,20 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
   $new_quantity=$_POST['quantity'];
   switch($action){
    case'update':{
-    if($new_quantity ='other'){
+    if($new_quantity !='other'){
+      $update="UPDATE cart c SET c.Quantity= $new_quantity WHERE c.Product_id= $p_id AND c.user_id=$user;";
+      $run=mysqli_query($GLOBALS['conn'],$update);
+    }
+    elseif($new_quantity='other'&&isset($_POST['other'])){
       $new_quantity=$_POST['other'];
-      $other="UPDATE cart c SET c.Quantity= $new_quantity WHERE c.Product_id= $p_id;";
+      $other="UPDATE cart c SET c.Quantity= $new_quantity WHERE c.Product_id= $p_id AND c.user_id=$user;";
       $run_other=mysqli_query($GLOBALS['conn'],$other);
     }
-    else{
-     $update="UPDATE cart c SET c.Quantity= $new_quantity WHERE c.Product_id= $p_id;";
-     $run=mysqli_query($GLOBALS['conn'],$update);}
      break;
   }
   
   case'trash':{
-   $remove="DELETE FROM cart c WHERE c.Product_id=$p_id;";
+   $remove="DELETE FROM cart  WHERE Product_id=$p_id AND user_id=$user;";
    $run=mysqli_query($GLOBALS['conn'],$remove);
    break;
   }
@@ -41,7 +52,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
   p.Product_Description,p.Image_path, c.Quantity 
         FROM products p 
         LEFT JOIN cart c ON p.Product_id = c.Product_id
-        WHERE c.Quantity>=1;";
+        WHERE c.Quantity>=1 AND c.user_id=$user;";
   $result = mysqli_query($GLOBALS['conn'],$item);
 
 ?>
@@ -137,7 +148,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                 <option value="8">8</option>
                 <option value="9">9</option>
                 <option value="10">10</option>
-                <option value="-">other</option>
+                <option value="other">other</option>
                 </select>
                 <input type="hidden" name="product_id" value="<?php echo $prod; ?>">
                 <label style="font-size: 1.5rem;font-family:serif; padding-left:1rem;">Please Specify if other:</label>

@@ -12,17 +12,25 @@ $db_port = $config['DB_PORT'];
 $conn="";
 
 $conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
-    
+function generateRandomUserId() {
+  return random_int(100000, 999999); // Generates a random 6-digit number
+}
+if(!isset($_SESSION['user_id'])){
+  $_SESSION['user_id']=generateRandomUserId();
+  $stmt = $mysqli->prepare("INSERT INTO users (user_id) VALUES (?)");
+  $stmt->bind_param("i", $_SESSION['user_id']);
+} 
+ $user=$_SESSION['user_id'];
  try {
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $cart_id = $_POST['id'];
       $quantity = $_POST['quantity'];
-      $stmt = $conn->prepare("INSERT INTO cart (Product_id, Quantity) VALUES (?,?)");
-      $stmt->bind_param("ii", $cart_id, $quantity); 
+      $stmt = $conn->prepare("INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?)");
+      $stmt->bind_param("iii", $cart_id, $quantity,$user); 
       
       if ($stmt->execute()) {
-          echo "Product added to cart successfully.";
+          echo "<h4>Product added to cart successfully.</h4>";
       } else {
           echo "Error adding product to cart: " . $stmt->error;
       }
@@ -57,7 +65,6 @@ $conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
         <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
         <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
         <meta name="author" content="MCPharm">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
     </head>
 

@@ -12,10 +12,13 @@ $db_port = $config['DB_PORT'];
  $conn="";
 
 $conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
- $item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,p.Product_Description,p.Image_path, c.Quantity 
+
+$user=$_SESSION['user_id'];
+
+ $item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,p.Product_Description,p.Image_path, c.Quantity , c.user_id
  FROM products p 
  LEFT JOIN cart c ON p.Product_id = c.Product_id
- WHERE c.Quantity>=1;";
+ WHERE c.Quantity>=1 AND c.user_id=$user;";
  $result = mysqli_query($conn,$item);
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
@@ -46,7 +49,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
         <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
         <meta name="author" content="MCPharm">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
     </head>
     
