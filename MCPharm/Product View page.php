@@ -26,7 +26,10 @@ if(!isset($_SESSION['user_id'])){
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $cart_id = $_POST['id'];
       $quantity = $_POST['quantity'];
-      $stmt = $conn->prepare("INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?)");
+      $action=$_POST['Add_cart'];
+      switch($action){
+        case'add_to_cart':{
+          $stmt = $conn->prepare("INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?)");
       $stmt->bind_param("iii", $cart_id, $quantity,$user); 
       
       if ($stmt->execute()) {
@@ -34,6 +37,21 @@ if(!isset($_SESSION['user_id'])){
       } else {
           echo "Error adding product to cart: " . $stmt->error;
       }
+          break;
+        }
+        case'add_related':{
+          $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id,Quantity) VALUES (?,?,'1');");
+      $stmt->bind_param("ii", $cart_id,$user); 
+      
+      if ($stmt->execute()) {
+          echo "<h4>Product added to cart successfully.</h4>";
+      } else {
+          echo "Error adding product to cart: " . $stmt->error;
+      }
+          break;
+        }
+      }
+      
 
       // Close the statement
       $stmt->close();
@@ -177,7 +195,7 @@ if(!isset($_SESSION['user_id'])){
                                           . '...' : $product_description; ?></p>
           <p class="product-description">$<?php echo $recco["Price"]; ?></p>
           
-            <button class="add-to-cart-btn" name="Add_cart" value="add_to_cart">Add to Cart</button>
+            <button class="add-to-cart-btn" name="Add_cart" value="add_related">Add to Cart</button>
    
           
       </div>       

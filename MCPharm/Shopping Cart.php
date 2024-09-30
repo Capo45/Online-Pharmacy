@@ -123,10 +123,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             <ul>
                 <a href="Product View page.php?product_id=<?php echo htmlspecialchars($cart_item['Product_id']); ?>">
                   <li class="cart_item_title"><?php $product_name = htmlspecialchars($cart_item['Product_Name']); 
-                                          echo strlen($product_name) > 45 ? substr($product_name, 0, 45)
+                                          echo strlen($product_name) > 30 ? substr($product_name, 0, 30)
                                           . '...' : $product_name; ?></li></a>
                 <li class="cart_item_description"><?php $product_desc = htmlspecialchars($cart_item['Brief_Description']); 
-                                          echo strlen($product_desc) > 45 ? substr($product_desc, 0, 45)
+                                          echo strlen($product_desc) > 30 ? substr($product_desc, 0, 30)
                                           . '...' : $product_desc; ?></li>
                 <li class="cart_item_price">
                   $<?php $price=(int)$cart_item['Price'] * (int)$cart_item['Quantity']; echo $price;
