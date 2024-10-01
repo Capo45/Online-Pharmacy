@@ -166,7 +166,7 @@ border-radius: 1rem;
   border-radius: 0.313rem;
   padding: 1.5rem;
   display: none;
-  transition: opacity 0.3 ease;
+  opacity: 0.3 ease;
 
 }
 #check1:checked ~ #submenu1{
@@ -183,8 +183,7 @@ border-radius: 1rem;
   border-radius: 0.313rem;
   padding: 1.5rem;
   display: none;
-  transition: opacity 0.3 ease;
-  float: inline-end;
+  opacity: 0.3 ease;
 }
 #check2:checked ~ #submenu2{
   display: block;
@@ -201,7 +200,7 @@ border-radius: 1rem;
   border-radius: 0.313rem;
   padding: 1.5rem;
   display: none;
-  transition: opacity 0.3 ease;
+  opacity: 0.3 ease;
 }
 #check3:checked ~ #submenu3{
   display: block;
@@ -217,7 +216,7 @@ border-radius: 1rem;
   border-radius: 0.313rem;
   padding: 1.5rem;
   display: none;
-  transition: opacity 0.3 ease;
+  opacity: 0.3 ease;
 }
 #check4:checked ~ #submenu4{
   display: block;
@@ -336,8 +335,8 @@ border-radius: 1rem;
   width: 19rem;
   height: 12rem;
   border-radius: 0.5rem;
-  margin: none;
-  margin-bottom: 0;
+  margin: 0rem;
+  margin-bottom: 0rem;
 }
 .advice_section{
   display: flex;
@@ -534,8 +533,8 @@ box-shadow: 0 1.5rem 3rem -0.75rem hsla(0, 0%, 0%, 0.811);
   width: 15rem;
   height: 15rem;
   border-radius: 0.5rem;
-  margin: none;
-  margin-bottom: 0;
+  margin: 0rem;
+  margin-bottom: 0rem;
 }
 
 .product-box {
@@ -610,7 +609,7 @@ transition: background-color 0.3s ease;
 .add-to-cart-btn:hover {
 background-color: white;
 color: #9c0707;
-scale: 1.1;
+transform:scale(1.1);
 }
 
 .cart_items{
@@ -774,7 +773,7 @@ margin-left: 1.5rem;
 margin-right: 1.5rem;
 text-align: center;
 margin-bottom: 1.5rem;
-margin: top 1.5em;
+margin-top: 1.5em;
 height: 3.5rem;
 font-family: serif;
 font-weight: lighter;
@@ -804,7 +803,7 @@ to{margin-left: 1.5rem;}
 }
 
 @keyframes bills{
-0%{opacity:0;};
+0%{opacity:0;}
 25%{opacity: 0.25;}
 50%{opacity: 0.5;}
 75%{opacity: 0.75;}
