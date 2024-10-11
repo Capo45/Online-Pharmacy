@@ -33,8 +33,8 @@ if(!isset($_SESSION['user_id'])){
       $stmt->bind_param("iii", $cart_id, $quantity,$user); 
       
       if ($stmt->execute()) {
-          echo "<h4>Product added to cart successfully.</h4>";
-      } else {
+         ?>  <h4>Product added to cart successfully.</h4>
+      <?php } else {
           echo "Error adding product to cart: " . $stmt->error;
       }
           break;
@@ -76,254 +76,323 @@ if(!isset($_SESSION['user_id'])){
 ?> 
 
 <!DOCTYPE HTML>
+
 <html>
+
     <head>
+
         <title>Online Pharmacy website</title>
+
         <meta charset="UTF-8">
+
         <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
+
         <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
+
         <meta name="author" content="MCPharm">
+
+        <meta name="viewport" content="width=device-width, initial-scale=0.75">
+        
         <link rel="stylesheet" href="style.css">
+
     </head>
 
+
+
     <body>
+
         <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
+
         <section class="navigation_bar">
-            <table class="strp">
-                <tr>
-                    <th id="logo"><a href="homepage.html"><img src="Images/Navigation bar/logo.png" style="width: 5.938rem;height: 4.375rem;"></a></th>
-                    <th class="navheading"><h2><a href="Search results page.php?category=Medications">Medications</a><label for="check1" style="margin-left: 1rem;"><img src="Images/Down Arrow.png" class="arrow"></label></h2>
-                        <input type="checkbox" class="checker" id="check1">
-                    <ul id="submenu1" class="submenus">
-                        <li><a href="Search results page.php?sub_category=Pain relief">Pain relief</a></li>
-                        <li><a href="Search results page.php?sub_category=Digestive Health">Digestive Health</a></li>
-                        <li><a href="Search results page.php?sub_category=Allergy & Cold">Allergy & Cold</a></li>
-                        <li><a href="Search results page.php?sub_category=Chronic Condition Management">Chronic Condition Management</a></li>
-                    </ul>
-                    </th>
-                    <th  class="navheading"><h2><a href="Search results page.php?category=Supplements">Supplements</a><label for="check2" style="margin-left: 1rem;"><img src="Images/Down Arrow.png" class="arrow"></label></h2>
-                             <input type="checkbox" class="checker" id="check2">
-                        <ul id="submenu2" class="submenus">
-                            <li><a href="Search results page.php?sub_category=Multi-Vitamins">Multi-Vitamins</a></li>
-                            <li><a href="Search results page.php?sub_category=Minerals">Minerals</a></li>
-                            <li><a href="Search results page.php?sub_category=Herbal Supplements">Herbal Supplements</a></li>
-                            <li><a href="Search results page.php?sub_category=Fitness & Sports Nutrition">Fitness & Sports Nutrition</a></li> 
-                        </ul></th>
-                    <th class="navheading"><h2><a href="Search results page.php?category=Dental">Dental Health</a><label for="check3" style="margin-left: 1rem;"><img src="Images/Down Arrow.png" class="arrow"></label></h2>
-                                  <input type="checkbox" class="checker" id="check3">
-                        <ul id="submenu3" class="submenus">
-                            <li><a href="Search results page.php?sub_category=Toothpaste">Toothpaste</a></li>
-                            <li><a href="Search results page.php?sub_category=Mouth Wash">Mouth Wash</a></li>
-                            <li><a href="Search results page.php?sub_category=Dental floss">Dental floss</a></li>
-                            <li><a href="Search results page.php?sub_category=Toothbrushes">Toothbrushes</a></li>
-                        </ul></th>
-                    <th class="navheading"><h2><a href="Search results page.php?category=cosmetics">Cosmetics</a><label for="check4" style="margin-left: 1rem;"><img src="Images/Down Arrow.png" class="arrow"></label></h2>
-                                  <input type="checkbox" class="checker" id="check4">
-                        <ul id="submenu4" class="submenus">
-                            <li><a href="Search results page.php?sub_category=Skin Care Products">Skin Care Products</a></li>
-                            <li><a href="Search results page.php?sub_category=Makeup">Makeup</a></li>
-                            <li><a href="Search results page.php?sub_category=Fragrances">Fragrances</a></li>
-                            <li><a href="Search results page.php?sub_category=Hair dyes">Hair dyes</a></li> 
-                        </ul></th>
-                        <form action="Search results page.php" method="GET">
-                       <th><div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
-                        class="searchbar">
-                           </div></th>
-                       </form> 
-                        <th><a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png cart"  style="width: 1.7rem; height: 1.7rem;"></a></th>
-                  </tr>
-            </table>
-     </section>
+   
+   <div class="sidenav" id="sidenav">
+       <div id="sidemenu_top"><img src="sidelogo.png" id="side-logo"> 
+           <button id="close_sidenav" onclick="closeNav()"><img src="exit.png"></button></div>
+    <div class="categories">
+       <label for="check1"><img src="down.png" id="arrow"></label>
+       <input type="checkbox" id="check1" class="checkbox">
+       <a class="categ" href="Search results page.php?category=Medications">Medications</a>
+       <div id="submenu1" class="submenus">
+       <a href="Search results page.php?sub_category=Pain relief">Pain relief</a></li>
+       <br><a href="Search results page.php?sub_category=Digestive Health">Digestive Health</a></li>
+       <br><a href="Search results page.php?sub_category=Allergy & Cold">Allergy & Cold</a></li>
+       <br><a href="Search results page.php?sub_category=Chronic Condition Management">Chronic Condition Management</a></li>
+   </div>
+   </div>
+   
+   
+   <div class="categories">
+       <label for="check2"><img src="down.png" id="arrow"></label>
+       <input type="checkbox" id="check2" class="checkbox">
+       <a class="categ" href="Search results page.php?category=Supplements">Supplements</a>
+       <div id="submenu2" class="submenus">
+       <a href="Search results page.php?sub_category=Multi-Vitamins">Multi-Vitamins</a>
+       <br><a href="Search results page.php?sub_category=Minerals">Minerals</a>
+       <br><a href="Search results page.php?sub_category=Herbal Supplements">Herbal Supplements</a>
+       <br><a href="Search results page.php?sub_category=Fitness & Sports Nutrition">Fitness & Sports Nutrition</a></> 
+       </div>
+   </div>
+     
+       <div class="categories">
+           <label for="check3"><img src="down.png" id="arrow"></label>
+           <input type="checkbox" id="check3" class="checkbox">
+           <a class="categ" href="Search results page.php?category=Dental">Dental Health</a>
+           <div id="submenu3" class="submenus">
+               <a href="Search results page.php?sub_category=Toothpaste">Toothpaste</a>
+               <br><a href="Search results page.php?sub_category=Mouth Wash">Mouth Wash</a>
+               <br><a href="Search results page.php?sub_category=Dental floss">Dental floss</a>
+               <br><a href="Search results page.php?sub_category=Toothbrushes">Toothbrushes</a>
+           </div>    
+       </div>
+       <div class="categories">
+           <label for="check4"><img src="down.png" id="arrow"></label>
+           <input type="checkbox" id="check4" class="checkbox">
+           <a class="categ" href="Search results page.php?category=cosmetics">Cosmetics</a>
+           <div id="submenu4" class="submenus">
+               <a href="Search results page.php?sub_category=Skin Care Products">Skin Care Products</a>
+               <br><a href="Search results page.php?sub_category=Makeup">Makeup</a>
+               <br><a href="Search results page.php?sub_category=Fragrances">Fragrances</a>
+               <br><a href="Search results page.php?sub_category=Hair dyes">Hair dyes</a> 
+           </ul>
+       </div>
+   </div>
+   </div>
+           <div class="strp">
+                   <button id="sidemenu" onclick="openNav()"><img src="menu.png" id="sidemenu_image"></button>
+                   <a href="index2.html"><img src="logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>
+                   
+                   
+                       <form action="Search results page.php" method="GET">
+                      <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
+                       class="searchbar">
+                          </div>
+                      </form> 
+                       <a href="Shopping Cart.php"><img src="shopping cart icon.png"  style="width: 1.7rem; height: 1.7rem;"></a>
+           </div>
+    </section>        <br>
+
         <br>
-        <br>
+
+
 
         <?php
 
-while($row=mysqli_fetch_assoc($result)){
+        while($row=mysqli_fetch_assoc($result)){
 
-?>
+        ?>
 
-<section style="margin-top: 5rem;">
+        <section id="product_section">
 
-<form method="POST">
+        <form method="POST">
 
-    <div class="product_layout"><img src="<?php echo $row["Image_path"];?>" class="product_image">
+            <div class="product_layout"><img src="<?php echo $row["Image_path"];?>" class="product_image">
 
-       <div>
+               <div>
 
-        <ul class="product_description" style="width:40rem;">
+                <ul class="product_description" style="width:40rem;">
 
-          <li class="product_title"><?php echo htmlspecialchars($row["Product_Name"]);?></li>
+                  <li class="product_title"><?php echo htmlspecialchars($row["Product_Name"]);?></li>
 
-          <li style="word-break: break-all;hyphens: auto; /* Enable automatic hyphenation */
-overflow-wrap: break-word;
-word-wrap: break-word;"><?php echo htmlspecialchars($row["Brief_Description"]);?></li>
+                  <li style="word-break: break-all;hyphens: auto; /* Enable automatic hyphenation */
+    overflow-wrap: break-word;
+    word-wrap: break-word;"><?php echo htmlspecialchars($row["Brief_Description"]);?></li>
 
-          <li style="color: #9c0707; font-size: 2rem;">$ <?php echo htmlspecialchars($row["Price"]);?></li>
+                  <li style="color: #9c0707; font-size: 2rem;">$ <?php echo htmlspecialchars($row["Price"]);?></li>
 
-           <li><label style="font-size: 2.5rem;color:#9c0707;">Quantity: </label>
+                   <li><label style="font-size: 2.5rem;color:#9c0707;">Quantity: </label>
 
-            <select name="quantity" style="height:2.3rem; width:2.5rem; font-size:1.5rem;
+                    <select name="quantity" style="height:2.3rem; width:2.5rem; font-size:1.5rem;
 
-                                           font-family:serif;border-radius: 0.5rem; border:0.1rem #9c0707;
+                                                   font-family:serif;border-radius: 0.5rem; border:0.1rem #9c0707;
 
-                                           border-style:solid;">
+                                                   border-style:solid;">
 
-        <option value="1">1</option>
+                <option value="1">1</option>
 
-        <option value="2">2</option>
+                <option value="2">2</option>
 
-        <option value="3">3</option>
+                <option value="3">3</option>
 
-        <option value="4">4</option>
+                <option value="4">4</option>
 
-        <option value="5">5</option>
+                <option value="5">5</option>
 
-            </select>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </select>&nbsp;&nbsp;&nbsp;&nbsp;
 
-            <input type="hidden" class="addto_cart" name="id" value="<?php echo htmlspecialchars($row['Product_id']); ?>">
+                    <input type="hidden" class="addto_cart" name="id" value="<?php echo htmlspecialchars($row['Product_id']); ?>">
 
-            <button class="addto_cart" name="Add_cart" value="add_to_cart">Add To Cart</button></form></li>
+                    <button class="addto_cart" name="Add_cart" value="add_to_cart">Add To Cart</button></form></li>
+                </ul>
+             </div>
+            </div>
+        <div class="detailed_description">
+              <p id="details">Description</p>
+              <p ><?php echo htmlspecialchars($row["Product_Description"]);?></p>
+            </div>
+        </section>    
+        
 
-        </ul>
 
-       </div> 
+        <?php
 
-    </div>
+        }
 
-    <div style="margin-left: 2.5rem;width: 55rem; margin-top: 5rem; animation:fadeIn 2.5s;hyphens: auto;overflow-wrap: break-word;
-word-wrap: break-word;">
+        ?>
 
-      <p class="product_title">Description</p>
+        
 
-      <p style="font-size: 1.5rem;"><?php echo htmlspecialchars($row["Product_Description"]);?></p>
+        <p class="product_title" style="margin-left: 1.5rem; margin-top: 5rem;animation:fadeIn 2.5s;">Related Products</p>
 
-    </div></form>
+        <section  id="related">
 
-</section>
+          <?php 
 
-<?php
+         while($recco=mysqli_fetch_assoc($related)){
 
-}
+        ?><form method="POST">
 
-?>
+        <div class="product-box">
 
+        <img class="product-image" src="<?php echo $recco["Image_path"]; ?>" class="advice_images">
 
+          <a href="Product View page.php?product_id=<?php echo $recco['Product_id']; ?>"
 
-<p class="product_title" style="margin-left: 1.5rem; margin-top: 5rem;animation:fadeIn 2.5s;">Related Products</p>
+           style="text-decoration: none;
 
-<section  style="display: flex;
+           font-size: 1.125rem;
 
-             flex-wrap: wrap;
+           font-weight: bold;
 
-             width: 100%;
+           margin-bottom: 0.5rem;
 
-             animation:fadeIn 2.5s;
+           padding-left:1rem;
 
-             animation-delay:1.5s;">
+           padding-top:1.5rem;
 
-  <?php 
+           padding-right:0.3rem;
 
- while($recco=mysqli_fetch_assoc($related)){
+          color: #000000;"><?php $product_name = $recco["Product_Name"]; 
 
-?><form method="POST">
+                                          echo strlen($product_name) > 25 ? substr($product_name, 0, 25)
 
-<div class="product-box">
+                                          . '...' : $product_name; ?></a>
 
-<img class="product-image" src="<?php echo $recco["Image_path"]; ?>" class="advice_images">
+         <p class="product-description"><?php $product_description = $recco["Brief_Description"]; 
 
-  <a href="Product View page.php?product_id=<?php echo $recco['Product_id']; ?>"
+                                          echo strlen($product_description) > 25 ? substr($product_description, 0, 25) 
 
-   style="text-decoration: none;
+                                          . '...' : $product_description; ?></p>
 
-   font-size: 1.125rem;
+          <p class="product-description">$<?php echo $recco["Price"]; ?></p>
 
-   font-weight: bold;
+          
+            <input type="hidden" name="id" value="<?php echo $recco['Product_id']; ?>">
+            <input type="hidden" name="quantity" value="1">
+            <button class="add-to-cart-btn" name="Add_cart" value="add_to_cart">Add to Cart</button>
 
-   margin-bottom: 0.5rem;
+   
 
-   padding-left:1rem;
+          
 
-   padding-top:1.5rem;
+      </div>       
 
-   padding-right:0.3rem;
+      </form>
 
-  color: #000000;"><?php $product_name = $recco["Product_Name"]; 
+       <?php
 
-                                  echo strlen($product_name) > 25 ? substr($product_name, 0, 25)
+         }
 
-                                  . '...' : $product_name; ?></a>
+       ?>
 
- <p class="product-description"><?php $product_description = $recco["Brief_Description"]; 
-
-                                  echo strlen($product_description) > 25 ? substr($product_description, 0, 25) 
-
-                                  . '...' : $product_description; ?></p>
-
-  <p class="product-description">$<?php echo $recco["Price"]; ?></p>
-
-  
-    <input type="hidden" name="id" value="<?php echo $recco['Product_id']; ?>">
-    <input type="hidden" name="quantity" value="1">
-    <button class="add-to-cart-btn" name="Add_cart" value="add_to_cart">Add to Cart</button>
-
-
-
-  
-
-</div>       
-
-</form>
-
-<?php
-
- }
-
-?>
-
-</section>
-
+        </section>
 
       
+
          <!--Page Footer containing payment options, links to relevant pages and contact tools-->
+
          <footer>
+
           <div class="footer-container">
+
             <div class="footer-section links">
+
               <p class="footer_headings">Quick Links</p>
+
               <ul>
+
                 <li><a href="#" class="footer_link">About Us</a></li>
+
                 <li><a href="#" class="footer_link">Services</a></li>
+
                 <li><a href="#" class="footer_link">Contact</a></li>
+
                 <li><a href="#" class="footer_link">FAQ</a></li>
+
               </ul>
+
             </div>
+
         
+
             <div class="footer-section payment-methods">
+
               <p class="footer_headings">Payment Methods</p>
-              <img src="Images/Footer/Visa_Logo.png" alt="Visa"><br>
-              <img src="Images/Footer/MasterCard_logo.png" alt="Mastercard"><br>
-              <img src="Images/Footer/Paypal-logo.png" alt="PayPal">
+
+              <img src="Visa_Logo.png" alt="Visa"><br>
+
+              <img src="MasterCard_logo.png" alt="Mastercard"><br>
+
+              <img src="Paypal-logo.png" alt="PayPal">
+
             </div>
+
         
+
             <div class="footer-section contact-info">
+
               <p class="footer_headings">Contact Us</p>
+
               <p>123 Main Street, City, Country</p>
+
               <p>Email: info@example.com</p>
+
               <p>Phone: +1 234 567 8900</p>
+
             </div>
+
         
+
             <div class="footer-section social-media">
+
               <p class="footer_headings">Follow Us</p>
-              <a href="#"><img src="Images/Footer/insta_logo_black.png" alt="Instagram"></a>
-              <a href="#"><img src="Images/Footer/tiktok_icon_black.png" alt="TikTok"></a>
-              <a href="#"><img src="Images/Footer/whatsapp_logo.png" alt="Whatsapp"></a>
+
+              <a href="#"><img src="insta_logo_black.png" alt="Instagram"></a>
+
+              <a href="#"><img src="tiktok_icon_black.png" alt="TikTok"></a>
+
+              <a href="#"><img src="whatsapp_logo.png" alt="Whatsapp"></a>
+
             </div>
+
           </div>
+
         
+
           <div class="copyright">
+
             <p>&copy; 2024 MCPharm. All rights reserved.</p>
+
           </div>
+
         </footer>
+        <script>
+            function openNav() {
+                document.getElementById("sidenav").classList.add("active");
+            }
+
+            function closeNav() {
+                document.getElementById("sidenav").classList.remove("active");
+            }
+        </script>
     </body>
-    
 </html>

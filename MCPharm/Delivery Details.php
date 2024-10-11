@@ -58,6 +58,8 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
         <meta name="author" content="MCPharm">
 
+        <meta name="viewport" content="width=device-width, initial-scale=0.75">
+
         <link rel="stylesheet" href="style.css">
 
     </head>
@@ -68,53 +70,73 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
         <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
 
-       <section class="navigation_bar">
-            <table class="strp">
-                <tr>
-                    <th id="logo"><a href="homepage.html"><img src="Images/Navigation bar/logo.png" style="width: 5.938rem;height: 4.375rem;"></a></th>
-                    <th class="navheading"><h2><a href="Search results page.php?category=Medications">Medications</a><label for="check1" style="margin-left: 1rem;"><img src="Images/Down Arrow.png" class="arrow"></label></h2>
-                        <input type="checkbox" class="checker" id="check1">
-                    <ul id="submenu1" class="submenus">
-                        <li><a href="Search results page.php?sub_category=Pain relief">Pain relief</a></li>
-                        <li><a href="Search results page.php?sub_category=Digestive Health">Digestive Health</a></li>
-                        <li><a href="Search results page.php?sub_category=Allergy & Cold">Allergy & Cold</a></li>
-                        <li><a href="Search results page.php?sub_category=Chronic Condition Management">Chronic Condition Management</a></li>
-                    </ul>
-                    </th>
-                    <th  class="navheading"><h2><a href="Search results page.php?category=Supplements">Supplements</a><label for="check2" style="margin-left: 1rem;"><img src="Images/Down Arrow.png" class="arrow"></label></h2>
-                             <input type="checkbox" class="checker" id="check2">
-                        <ul id="submenu2" class="submenus">
-                            <li><a href="Search results page.php?sub_category=Multi-Vitamins">Multi-Vitamins</a></li>
-                            <li><a href="Search results page.php?sub_category=Minerals">Minerals</a></li>
-                            <li><a href="Search results page.php?sub_category=Herbal Supplements">Herbal Supplements</a></li>
-                            <li><a href="Search results page.php?sub_category=Fitness & Sports Nutrition">Fitness & Sports Nutrition</a></li> 
-                        </ul></th>
-                    <th class="navheading"><h2><a href="Search results page.php?category=Dental">Dental Health</a><label for="check3" style="margin-left: 1rem;"><img src="Images/Down Arrow.png" class="arrow"></label></h2>
-                                  <input type="checkbox" class="checker" id="check3">
-                        <ul id="submenu3" class="submenus">
-                            <li><a href="Search results page.php?sub_category=Toothpaste">Toothpaste</a></li>
-                            <li><a href="Search results page.php?sub_category=Mouth Wash">Mouth Wash</a></li>
-                            <li><a href="Search results page.php?sub_category=Dental floss">Dental floss</a></li>
-                            <li><a href="Search results page.php?sub_category=Toothbrushes">Toothbrushes</a></li>
-                        </ul></th>
-                    <th class="navheading"><h2><a href="Search results page.php?category=cosmetics">Cosmetics</a><label for="check4" style="margin-left: 1rem;"><img src="Images/Down Arrow.png" class="arrow"></label></h2>
-                                  <input type="checkbox" class="checker" id="check4">
-                        <ul id="submenu4" class="submenus">
-                            <li><a href="Search results page.php?sub_category=Skin Care Products">Skin Care Products</a></li>
-                            <li><a href="Search results page.php?sub_category=Makeup">Makeup</a></li>
-                            <li><a href="Search results page.php?sub_category=Fragrances">Fragrances</a></li>
-                            <li><a href="Search results page.php?sub_category=Hair dyes">Hair dyes</a></li> 
-                        </ul></th>
-                        <form action="Search results page.php" method="GET">
-                       <th><div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
-                        class="searchbar">
-                           </div></th>
-                       </form> 
-                        <th><a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png cart"  style="width: 1.7rem; height: 1.7rem;"></a></th>
-                  </tr>
-            </table>
-     </section>
-       
+        <section class="navigation_bar">
+   
+   <div class="sidenav" id="sidenav">
+       <div id="sidemenu_top"><img src="sidelogo.png" id="side-logo"> 
+           <button id="close_sidenav" onclick="closeNav()"><img src="exit.png"></button></div>
+    <div class="categories">
+       <label for="check1"><img src="down.png" id="arrow"></label>
+       <input type="checkbox" id="check1" class="checkbox">
+       <a class="categ" href="Search results page.php?category=Medications">Medications</a>
+       <div id="submenu1" class="submenus">
+       <a href="Search results page.php?sub_category=Pain relief">Pain relief</a></li>
+       <br><a href="Search results page.php?sub_category=Digestive Health">Digestive Health</a></li>
+       <br><a href="Search results page.php?sub_category=Allergy & Cold">Allergy & Cold</a></li>
+       <br><a href="Search results page.php?sub_category=Chronic Condition Management">Chronic Condition Management</a></li>
+   </div>
+   </div>
+   
+   
+   <div class="categories">
+       <label for="check2"><img src="down.png" id="arrow"></label>
+       <input type="checkbox" id="check2" class="checkbox">
+       <a class="categ" href="Search results page.php?category=Supplements">Supplements</a>
+       <div id="submenu2" class="submenus">
+       <a href="Search results page.php?sub_category=Multi-Vitamins">Multi-Vitamins</a>
+       <br><a href="Search results page.php?sub_category=Minerals">Minerals</a>
+       <br><a href="Search results page.php?sub_category=Herbal Supplements">Herbal Supplements</a>
+       <br><a href="Search results page.php?sub_category=Fitness & Sports Nutrition">Fitness & Sports Nutrition</a></> 
+       </div>
+   </div>
+     
+       <div class="categories">
+           <label for="check3"><img src="down.png" id="arrow"></label>
+           <input type="checkbox" id="check3" class="checkbox">
+           <a class="categ" href="Search results page.php?category=Dental">Dental Health</a>
+           <div id="submenu3" class="submenus">
+               <a href="Search results page.php?sub_category=Toothpaste">Toothpaste</a>
+               <br><a href="Search results page.php?sub_category=Mouth Wash">Mouth Wash</a>
+               <br><a href="Search results page.php?sub_category=Dental floss">Dental floss</a>
+               <br><a href="Search results page.php?sub_category=Toothbrushes">Toothbrushes</a>
+           </div>    
+       </div>
+       <div class="categories">
+           <label for="check4"><img src="down.png" id="arrow"></label>
+           <input type="checkbox" id="check4" class="checkbox">
+           <a class="categ" href="Search results page.php?category=cosmetics">Cosmetics</a>
+           <div id="submenu4" class="submenus">
+               <a href="Search results page.php?sub_category=Skin Care Products">Skin Care Products</a>
+               <br><a href="Search results page.php?sub_category=Makeup">Makeup</a>
+               <br><a href="Search results page.php?sub_category=Fragrances">Fragrances</a>
+               <br><a href="Search results page.php?sub_category=Hair dyes">Hair dyes</a> 
+           </ul>
+       </div>
+   </div>
+   </div>
+           <div class="strp">
+                   <button id="sidemenu" onclick="openNav()"><img src="menu.png" id="sidemenu_image"></button>
+                   <a href="index2.html"><img src="logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>
+                   
+                   
+                       <form action="Search results page.php" method="GET">
+                      <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
+                       class="searchbar">
+                          </div>
+                      </form> 
+                       <a href="Shopping Cart.php"><img src="shopping cart icon.png"  style="width: 1.7rem; height: 1.7rem;"></a>
+           </div>
+    </section>
 
    
 
@@ -212,11 +234,11 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
                 <p class="footer_headings">Payment Methods</p>
 
-                <img src="Images/Footer/Visa_Logo.png" alt="Visa"><br>
+                <img src="Visa_Logo.png" alt="Visa"><br>
 
-                <img src="Images/Footer/MasterCard_logo.png" alt="Mastercard"><br>
+                <img src="MasterCard_logo.png" alt="Mastercard"><br>
 
-                <img src="Images/Footer/Paypal-logo.png" alt="PayPal">
+                <img src="Paypal-logo.png" alt="PayPal">
 
               </div>
 
@@ -240,11 +262,11 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
                 <p class="footer_headings">Follow Us</p>
 
-                <a href="#"><img src="Images/Footer/insta_logo_black.png" alt="Instagram"></a>
+                <a href="#"><img src="insta_logo_black.png" alt="Instagram"></a>
 
-                <a href="#"><img src="Images/Footer/tiktok_icon_black.png" alt="TikTok"></a>
+                <a href="#"><img src="tiktok_icon_black.png" alt="TikTok"></a>
 
-                <a href="#"><img src="Images/Footer/whatsapp_logo.png" alt="Whatsapp"></a>
+                <a href="#"><img src="whatsapp_logo.png" alt="Whatsapp"></a>
 
               </div>
 
@@ -259,7 +281,15 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             </div>
 
           </footer>
+          <script>
+            function openNav() {
+                document.getElementById("sidenav").classList.add("active");
+            }
 
+            function closeNav() {
+                document.getElementById("sidenav").classList.remove("active");
+            }
+        </script>
     </body>
 
     
