@@ -61,71 +61,71 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
         <section class="navigation_bar">
    
-   <div class="sidenav" id="sidenav">
-       <div id="sidemenu_top"><img src="sidelogo.png" id="side-logo"> 
-           <button id="close_sidenav" onclick="closeNav()"><img src="exit.png"></button></div>
+    <div class="sidenav" id="sidenav">
+    <div id="sidemenu_top"><a href="index2.html"><img src="Images/Navigation bar/sidelogo.png" id="side-logo"></a>  
+            <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
+     <div class="categories">
+        <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
+        <input type="checkbox" id="check1" class="checkbox">
+        <a class="categ" href="Search results page.php?category=Medications">Medications</a>
+        <div id="submenu1" class="submenus">
+        <a href="Search results page.php?sub_category=Pain relief">Pain relief</a></li>
+        <br><a href="Search results page.php?sub_category=Digestive Health">Digestive Health</a></li>
+        <br><a href="Search results page.php?sub_category=Allergy & Cold">Allergy & Cold</a></li>
+        <br><a href="Search results page.php?sub_category=Chronic Condition Management">Chronic Condition Management</a></li>
+    </div>
+    </div>
+    
+    
     <div class="categories">
-       <label for="check1"><img src="down.png" id="arrow"></label>
-       <input type="checkbox" id="check1" class="checkbox">
-       <a class="categ" href="Search results page.php?category=Medications">Medications</a>
-       <div id="submenu1" class="submenus">
-       <a href="Search results page.php?sub_category=Pain relief">Pain relief</a></li>
-       <br><a href="Search results page.php?sub_category=Digestive Health">Digestive Health</a></li>
-       <br><a href="Search results page.php?sub_category=Allergy & Cold">Allergy & Cold</a></li>
-       <br><a href="Search results page.php?sub_category=Chronic Condition Management">Chronic Condition Management</a></li>
-   </div>
-   </div>
-   
-   
-   <div class="categories">
-       <label for="check2"><img src="down.png" id="arrow"></label>
-       <input type="checkbox" id="check2" class="checkbox">
-       <a class="categ" href="Search results page.php?category=Supplements">Supplements</a>
-       <div id="submenu2" class="submenus">
-       <a href="Search results page.php?sub_category=Multi-Vitamins">Multi-Vitamins</a>
-       <br><a href="Search results page.php?sub_category=Minerals">Minerals</a>
-       <br><a href="Search results page.php?sub_category=Herbal Supplements">Herbal Supplements</a>
-       <br><a href="Search results page.php?sub_category=Fitness & Sports Nutrition">Fitness & Sports Nutrition</a></> 
-       </div>
-   </div>
-     
-       <div class="categories">
-           <label for="check3"><img src="down.png" id="arrow"></label>
-           <input type="checkbox" id="check3" class="checkbox">
-           <a class="categ" href="Search results page.php?category=Dental">Dental Health</a>
-           <div id="submenu3" class="submenus">
-               <a href="Search results page.php?sub_category=Toothpaste">Toothpaste</a>
-               <br><a href="Search results page.php?sub_category=Mouth Wash">Mouth Wash</a>
-               <br><a href="Search results page.php?sub_category=Dental floss">Dental floss</a>
-               <br><a href="Search results page.php?sub_category=Toothbrushes">Toothbrushes</a>
-           </div>    
-       </div>
-       <div class="categories">
-           <label for="check4"><img src="down.png" id="arrow"></label>
-           <input type="checkbox" id="check4" class="checkbox">
-           <a class="categ" href="Search results page.php?category=cosmetics">Cosmetics</a>
-           <div id="submenu4" class="submenus">
-               <a href="Search results page.php?sub_category=Skin Care Products">Skin Care Products</a>
-               <br><a href="Search results page.php?sub_category=Makeup">Makeup</a>
-               <br><a href="Search results page.php?sub_category=Fragrances">Fragrances</a>
-               <br><a href="Search results page.php?sub_category=Hair dyes">Hair dyes</a> 
-           </ul>
-       </div>
-   </div>
-   </div>
-           <div class="strp">
-                   <button id="sidemenu" onclick="openNav()"><img src="menu.png" id="sidemenu_image"></button>
-                   <a href="index2.html"><img src="logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>
-                   
-                   
-                       <form action="Search results page.php" method="GET">
-                      <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
-                       class="searchbar">
-                          </div>
-                      </form> 
-                       <a href="Shopping Cart.php"><img src="shopping cart icon.png"  style="width: 1.7rem; height: 1.7rem;"></a>
-           </div>
-    </section>     
+        <label for="check2"><img src="Images/Navigation bar/down.png" id="arrow"></label>
+        <input type="checkbox" id="check2" class="checkbox">
+        <a class="categ" href="Search results page.php?category=Supplements">Supplements</a>
+        <div id="submenu2" class="submenus">
+        <a href="Search results page.php?sub_category=Multi-Vitamins">Multi-Vitamins</a>
+        <br><a href="Search results page.php?sub_category=Minerals">Minerals</a>
+        <br><a href="Search results page.php?sub_category=Herbal Supplements">Herbal Supplements</a>
+        <br><a href="Search results page.php?sub_category=Fitness & Sports Nutrition">Fitness & Sports Nutrition</a></> 
+        </div>
+    </div>
+      
+        <div class="categories">
+            <label for="check3"><img src="Images/Navigation bar/down.png" id="arrow"></label>
+            <input type="checkbox" id="check3" class="checkbox">
+            <a class="categ" href="Search results page.php?category=Dental">Dental Health</a>
+            <div id="submenu3" class="submenus">
+                <a href="Search results page.php?sub_category=Toothpaste">Toothpaste</a>
+                <br><a href="Search results page.php?sub_category=Mouth Wash">Mouth Wash</a>
+                <br><a href="Search results page.php?sub_category=Dental floss">Dental floss</a>
+                <br><a href="Search results page.php?sub_category=Toothbrushes">Toothbrushes</a>
+            </div>    
+        </div>
+        <div class="categories">
+            <label for="check4"><img src="Images/Navigation bar/down.png" id="arrow"></label>
+            <input type="checkbox" id="check4" class="checkbox">
+            <a class="categ" href="Search results page.php?category=cosmetics">Cosmetics</a>
+            <div id="submenu4" class="submenus">
+                <a href="Search results page.php?sub_category=Skin Care Products">Skin Care Products</a>
+                <br><a href="Search results page.php?sub_category=Makeup">Makeup</a>
+                <br><a href="Search results page.php?sub_category=Fragrances">Fragrances</a>
+                <br><a href="Search results page.php?sub_category=Hair dyes">Hair dyes</a> 
+            </ul>
+        </div>
+    </div>
+    </div>
+            <div class="strp">
+                    <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
+                    <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>
+                    
+                    
+                        <form action="Search results page.php" method="GET">
+                       <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
+                        class="searchbar">
+                           </div>
+                       </form> 
+                        <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
+            </div>
+     </section>
 
        <section style="margin-top: 10rem; margin-left: 25rem; margin-right: 25rem;">
 
