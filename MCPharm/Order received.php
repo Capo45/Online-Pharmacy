@@ -24,8 +24,10 @@ $user=$_SESSION['user_id'];
  $result = mysqli_query($conn,$item);
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
-    $clear = "DELETE FROM receipts WHERE user_id=$user";
-    $reset = mysqli_query($conn,$clear);
+    $clear_receipt = "DELETE FROM receipts WHERE user_id=$user;";
+    $clear_cart = "DELETE FROM cart WHERE user_id=$user;";
+    $reset_receipts = mysqli_query($conn,$clear_receipt);
+    $reset_cart = mysqli_query($conn,$clear_cart);
     header("Location:index2.html");
       exit();
   }
@@ -137,7 +139,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
    <div class="details_container" style="animation: bills 2s;">
 
-   <img src="logo.png" style="width: 6rem;height:4rem">    
+   <img src="Images/Navigation bar/logo.png" style="width: 6rem;height:4rem">    
 
    <p class="product_title" style="margin-left: 1rem; margin-bottom:0.12rem;">Your Receipt</p>
 

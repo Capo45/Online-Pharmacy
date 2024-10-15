@@ -23,8 +23,8 @@ if(!isset($_SESSION['user_id'])){
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $cart_id = $_POST['id'];
-
-      $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id, Quantity) VALUES (?,?,'1')");
+      
+      $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id, Quantity) VALUES (?,?,'1') ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
       $stmt->bind_param("ii", $cart_id,$user); 
       
       if ($stmt->execute()) {

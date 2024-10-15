@@ -234,11 +234,11 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
                 <p class="footer_headings">Payment Methods</p>
 
-                <img src="Visa_Logo.png" alt="Visa"><br>
+                <img src="Images/Footer/Visa_Logo.png" alt="Visa"><br>
 
-                <img src="MasterCard_logo.png" alt="Mastercard"><br>
+                <img src="Images/Footer/MasterCard_logo.png" alt="Mastercard"><br>
 
-                <img src="Paypal-logo.png" alt="PayPal">
+                <img src="Images/Footer/Paypal-logo.png" alt="PayPal">
 
               </div>
 
@@ -262,11 +262,11 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
                 <p class="footer_headings">Follow Us</p>
 
-                <a href="#"><img src="insta_logo_black.png" alt="Instagram"></a>
+                <a href="#"><img src="Images/Footer/insta_logo_black.png" alt="Instagram"></a>
 
-                <a href="#"><img src="tiktok_icon_black.png" alt="TikTok"></a>
+                <a href="#"><img src="Images/Footer/tiktok_icon_black.png" alt="TikTok"></a>
 
-                <a href="#"><img src="whatsapp_logo.png" alt="Whatsapp"></a>
+                <a href="#"><img src="Images/Footer/whatsapp_logo.png" alt="Whatsapp"></a>
 
               </div>
 

@@ -29,7 +29,7 @@ if(!isset($_SESSION['user_id'])){
       $action=$_POST['Add_cart'];
       switch($action){
         case'add_to_cart':{
-          $stmt = $conn->prepare("INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?)");
+          $stmt = $conn->prepare("INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE Quantity=Quantity+$quantity;");
       $stmt->bind_param("iii", $cart_id, $quantity,$user); 
       
       if ($stmt->execute()) {
@@ -40,7 +40,7 @@ if(!isset($_SESSION['user_id'])){
           break;
         }
         case'add_related':{
-          $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id,Quantity) VALUES (?,?,'1');");
+          $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id,Quantity) VALUES (?,?,'1')ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
       $stmt->bind_param("ii", $cart_id,$user); 
       
       if ($stmt->execute()) {

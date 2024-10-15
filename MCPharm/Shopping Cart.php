@@ -36,7 +36,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     }
 
   case'trash':{
-   $remove="DELETE FROM cart  WHERE Product_id=$p_id AND user_id=$user;";
+   $remove="DELETE FROM cart c WHERE c.Product_id=$p_id AND c.user_id=$user;";
    $run=mysqli_query($GLOBALS['conn'],$remove);
    break;
   }
@@ -150,14 +150,14 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
      <section id="cartLayout">
 
-     <form method="POST">
+
       <?php  $total=0;
 
                 foreach($result as $cart_item) {
 
        ?>
 
-        <div class="cart_items">
+        <div class="cart_items"> <form method="POST">
 
             <img src="<?php echo $cart_item['Image_path']; ?>" class="cart_item_image">
 
@@ -188,19 +188,19 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                 <li>
                   <button type="button" class="cart_buttons" id="minusBtn">-</button>
                   <input type="hidden" id="amount" value="<?php $quantity=$cart_item['Quantity']; echo $quantity; ?>">
-                  <label name="newQuantity" id="newQuantity" style="font-size: 1.5rem; padding:0.5rem; color:#9c0707;">1</label>
+                  <label name="newQuantity" id="newQuantity"><?php echo $quantity; ?></label>
                   <button type="button" class="cart_buttons" id="plusBtn">+</button>
-                  <input type="hidden" name="product_id" value="<?php echo $prod; ?>">
+                  <input type="hidden" name="product_id" id="product_id" value="<?php echo $prod;?>">
                   <button type="submit" class="cart_buttons" name="action" value="trash">
-                  <img src="Images/trash.png  " style="width: 1rem;height:1rem;"></button></li>
+                  <img src="Images/trash.png " style="width: 1rem;height:1rem;"></button></li>
            </ul>
 
-        </div>
+        </div></form>
         <?php  }
          if($result->num_rows>=1){
         ?>
         <p class="cart_item_title">Your Total is: $<?php echo $total; ?></p><br>
-        <input type="submit" class="order" name="action" value="Confirm Order"></form>
+        <form method="POST"><input type="submit" class="order" name="action" value="Confirm Order"></form>
        <?php }?>
     
 
