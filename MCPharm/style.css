@@ -739,7 +739,7 @@ transform:scale(1.1);
 
 #cartLayout{
   display: flex;
-  flex-wrap: nowrap ;
+  flex-wrap:  wrap ;
   flex-direction: column;
   width: 100%;
   justify-content: center;
@@ -814,11 +814,6 @@ cursor: pointer;
 transform: scale(1.1);
 }
 
-#newQuantity{
-  font-size: 1.5rem; 
-  padding:0.5rem; 
-  color:#9c0707;
-}
 
 .order{
 display: flex;

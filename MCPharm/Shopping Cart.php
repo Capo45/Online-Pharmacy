@@ -23,60 +23,67 @@ if(!isset($_SESSION['user_id'])){
 }
 $user=$_SESSION['user_id'];
   
+$item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,
+p.Product_Description,p.Image_path, c.Quantity 
+      FROM products p 
+      LEFT JOIN cart c ON p.Product_id = c.Product_id
+      WHERE c.Quantity>=1 AND c.user_id=$user;";
+$result = mysqli_query($GLOBALS['conn'],$item);
+
 if($_SERVER["REQUEST_METHOD"]=="POST"){
   $action=$_POST['action'];
   $p_id=$_POST['product_id'];
 
   switch($action){
     case'Confirm Order':{
-
       header("Location: Delivery Details.php");
       exit;
+    }
+
+    case'increment':{
+      $_SESSION['quantity']++;
+      $NewQuantity= $_SESSION['quantity'];
+      $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
+            mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $p_id, $user);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
       break;
     }
 
-  case'trash':{
-   $remove="DELETE FROM cart c WHERE c.Product_id=$p_id AND c.user_id=$user;";
-   $run=mysqli_query($GLOBALS['conn'],$remove);
+    case'decrement':{
+      $NewQuantity = max(1, $_SESSION['quantity'] - 1);
+      $_SESSION['quantity'] = $NewQuantity;
+      $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
+            mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $p_id, $user);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            break;
+      }
+
+   case'trash':{
+    $stmt = mysqli_prepare($GLOBALS['conn'], "DELETE FROM cart WHERE Product_id = ? AND user_id = ?");
+    mysqli_stmt_bind_param($stmt, 'ii', $p_id, $user);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
    break;
   }
-  }}
-
-  $item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,
-  p.Product_Description,p.Image_path, c.Quantity 
-        FROM products p 
-        LEFT JOIN cart c ON p.Product_id = c.Product_id
-        WHERE c.Quantity>=1 AND c.user_id=$user;";
-  $result = mysqli_query($GLOBALS['conn'],$item);
+  }
+   if(isset($NewQuantity)){echo $NewQuantity;exit;}
+   else{exit;}}
 ?>
-
-
 <!DOCTYPE HTML>
-
 <html>
-
     <head>
-
         <title>Online Pharmacy website</title>
-
         <meta charset="UTF-8">
-
         <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
-
         <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
-
         <meta name="author" content="MCPharm">
-
         <meta name="viewport" content="width=device-width, initial-scale=0.75">
-
         <link rel="stylesheet" href="style.css">
-
+        <script src="https://unpkg.com/htmx.org@1.9.2"></script>
     </head>
-
     <body>
-
-        <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
-
         <section class="navigation_bar">
    
     <div class="sidenav" id="sidenav">
@@ -94,7 +101,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     </div>
     </div>
     
-    
     <div class="categories">
         <label for="check2"><img src="Images/Navigation bar/down.png" id="arrow"></label>
         <input type="checkbox" id="check2" class="checkbox">
@@ -106,7 +112,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         <br><a href="Search results page.php?sub_category=Fitness & Sports Nutrition">Fitness & Sports Nutrition</a></> 
         </div>
     </div>
-      
+
         <div class="categories">
             <label for="check3"><img src="Images/Navigation bar/down.png" id="arrow"></label>
             <input type="checkbox" id="check3" class="checkbox">
@@ -133,165 +139,118 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     </div>
             <div class="strp">
                     <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
-                    <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>
-                    
-                    
-                        <form action="Search results page.php" method="GET">
-                       <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
-                        class="searchbar">
-                           </div>
-                       </form> 
-                        <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
-            </div>
+                    <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>                  
+      <form action="Search results page.php" method="GET">
+        <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar" class="searchbar">
+        </div>
+      </form> 
+         <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
+       </div>
      </section>
-        
-
      <p class="product_title" style="margin-left: 1.5rem; margin-top: 8rem;">Shopping Cart</p>
-
      <section id="cartLayout">
-
-
       <?php  $total=0;
-
                 foreach($result as $cart_item) {
-
+                  $quantity=$cart_item['Quantity'];
+                  if($quantity>=1){
        ?>
-
-        <div class="cart_items"> <form method="POST">
-
+        <div class="cart_items" id="cart_item-<?php echo $prod; ?>">
             <img src="<?php echo $cart_item['Image_path']; ?>" class="cart_item_image">
-
             <ul>
-
                 <a href="Product View page.php?product_id=<?php echo htmlspecialchars($cart_item['Product_id']); ?>">
-
                   <li class="cart_item_title"><?php $product_name = htmlspecialchars($cart_item['Product_Name']); 
-
                                           echo strlen($product_name) > 25 ? substr($product_name, 0, 25)
-
                                           . '...' : $product_name; ?></li></a>
-
                 <li class="cart_item_description"><?php $product_desc = htmlspecialchars($cart_item['Brief_Description']); 
-
                                           echo strlen($product_desc) > 25 ? substr($product_desc, 0, 25)
-
                                           . '...' : $product_desc; ?></li>
-
                 <li class="cart_item_price">
-
-                  $<?php $price=(int)$cart_item['Price'] * (int)$cart_item['Quantity']; echo $price;
-
+                  $<?php $price=(int)$cart_item['Price'] * (int)$quantity; echo $price;
                    $total=$total+$price; $prod=$cart_item['Product_id'];?>
-
                 </li>
 
                 <li>
-                  <button type="button" class="cart_buttons" id="minusBtn">-</button>
-                  <input type="hidden" id="amount" value="<?php $quantity=$cart_item['Quantity']; echo $quantity; ?>">
-                  <label name="newQuantity" id="newQuantity"><?php echo $quantity; ?></label>
-                  <button type="button" class="cart_buttons" id="plusBtn">+</button>
-                  <input type="hidden" name="product_id" id="product_id" value="<?php echo $prod;?>">
-                  <button type="submit" class="cart_buttons" name="action" value="trash">
+                  <button hx-post="" hx-target="#quantity-<?php echo $prod; ?>" hx-swap="innerHTML"
+                  hx-vals='{
+                  "action":"decrement",
+                  "product_id": <?php echo json_encode($prod); ?>}'
+                   class="cart_buttons" id="decrement">-</button>
+                  <span name="quantity" id="quantity-<?php echo $prod; ?>"
+                  style="font-size: 1.5rem; 
+                        padding:0.5rem; 
+                        color:#9c0707;"><?php echo $quantity;?></span>
+                  <button hx-post="" hx-target="#quantity-<?php echo $prod; ?>" hx-swap="innerHTML"
+                  hx-vals='{
+                  "action":"increment",
+                  "product_id": <?php echo json_encode($prod); ?>}'
+                   class="cart_buttons"
+                  id="increment">+</button>
+                  <button 
+                  hx-delete="/delete-item"
+                  hx-post=""
+                  hx-target="#cart_item-<?php echo $prod; ?>"
+                  hx-swap="outerHTML" 
+                  hx-vals='{
+                  "action": "trash",
+                  "product_id":<?php echo json_encode($prod);?>}'
+                  class="cart_buttons" id="trash">
                   <img src="Images/trash.png " style="width: 1rem;height:1rem;"></button></li>
            </ul>
-
-        </div></form>
-        <?php  }
+        </div>
+        <?php  }}
          if($result->num_rows>=1){
         ?>
         <p class="cart_item_title">Your Total is: $<?php echo $total; ?></p><br>
         <form method="POST"><input type="submit" class="order" name="action" value="Confirm Order"></form>
        <?php }?>
-    
-
      </section>
-
-
 
      <footer>
 
             <div class="footer-container">
-
               <div class="footer-section links">
-
                 <p class="footer_headings">Quick Links</p>
-
                 <ul>
-
                   <li><a href="#" class="footer_link">About Us</a></li>
-
                   <li><a href="#" class="footer_link">Services</a></li>
-
                   <li><a href="#" class="footer_link">Contact</a></li>
-
                   <li><a href="#" class="footer_link">FAQ</a></li>
-
                 </ul>
-
               </div>
-
-          
 
               <div class="footer-section payment-methods">
-
                 <p class="footer_headings">Payment Methods</p>
-
                 <img src="Images/Footer/Visa_Logo.png" alt="Visa"><br>
-
                 <img src="Images/Footer/MasterCard_logo.png" alt="Mastercard"><br>
-
                 <img src="Images/Footer/Paypal-logo.png" alt="PayPal">
-
               </div>
-
-          
 
               <div class="footer-section contact-info">
-
                 <p class="footer_headings">Contact Us</p>
-
                 <p>123 Main Street, City, Country</p>
-
                 <p>Email: info@example.com</p>
-
                 <p>Phone: +1 234 567 8900</p>
-
-              </div>
-
-          
+              </div>    
 
               <div class="footer-section social-media">
-
                 <p class="footer_headings">Follow Us</p>
-
                 <a href="#"><img src="Images/Footer/insta_logo_black.png" alt="Instagram"></a>
-
                 <a href="#"><img src="Images/Footer/tiktok_icon_black.png" alt="TikTok"></a>
-
                 <a href="#"><img src="Images/Footer/whatsapp_logo.png" alt="Whatsapp"></a>
-
               </div>
 
             </div>
-
-          
-
             <div class="copyright">
-
               <p>&copy; 2024 MCPharm. All rights reserved.</p>
-
             </div>
-
           </footer>
           <script>
             function openNav() {
                 document.getElementById("sidenav").classList.add("active");
             }
-
             function closeNav() {
                 document.getElementById("sidenav").classList.remove("active");
             }
         </script>
     </body>
-
 </html>
