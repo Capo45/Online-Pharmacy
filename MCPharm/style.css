@@ -42,7 +42,6 @@ text-decoration: none;
   height: 7rem; 
   background-color: #ffffff;
   box-shadow: 0 1.5rem 3rem -0.75rem hsla(0, 0%, 0%, 0.25);
-  border-radius: 0.5rem   ;
   display: flex;
 }
 
@@ -152,6 +151,11 @@ text-decoration: none;
   width: 6rem;
   font-size: 1rem;
 }   
+.searchbar::placeholder{
+  color: #000000;
+  text-align: left;
+  padding-left: 0.3rem;
+}
 .searchbar_wrapper{
   position: relative;  
   padding-left: 2.5rem;
@@ -160,10 +164,11 @@ text-decoration: none;
 .searchbar_wrapper input { 
   width: 15rem;
   height: 2rem;
-  text-align: center;
-  border: #9c0707 0.13rem;
+  text-align: left;
+  border: #9c0707 0.1rem;
   border-style: solid;
   border-radius: 0.5rem;
+  padding-left: 0.3rem;
 } 
 #cart_icon{
   width: 2rem;
@@ -317,10 +322,12 @@ text-decoration: none;
   animation: fadeIn 2s;
 }
 .slider-wrapper{
-  padding-top: 8rem;
+  padding-top: 4rem;
   position: relative;
-  max-width: 48rem;
+  width: 100%;
   margin: 0 auto;
+  background-color: #747373;
+  
 }
 .slider{
       display: flex;
@@ -328,13 +335,22 @@ text-decoration: none;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scroll-behavior: smooth;
-      box-shadow: 0 1.5rem 3rem -0.75rem #00000040;
-      border-radius: 0.5rem;
+}
+@keyframes slide {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(0); }
+  35% { transform: translateX(-100%); }
+  60% { transform: translateX(-100%); }
+  65% { transform: translateX(-200%); }
+  95% { transform: translateX(-200%); }
+  100% { transform: translateX(0); }
 }
 .slider img{
-  flex: 1 0 100%;
+  flex: 0 0 100%;
   scroll-snap-align: start;
   object-fit: cover;
+  animation: 12s slide infinite;
+  animation-timing-function: ease-in-out; 
 }
 .slider-nav{
   display: flex;
@@ -384,7 +400,6 @@ text-decoration: none;
   max-width: 48rem;
   margin: 0 auto;
 }
-
 
 /*Special offers section styling and effects*/
 .offers_table{
