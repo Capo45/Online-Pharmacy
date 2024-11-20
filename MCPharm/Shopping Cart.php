@@ -61,15 +61,15 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
       }
 
    case'trash':{
-    $stmt = mysqli_prepare($GLOBALS['conn'], "DELETE FROM cart WHERE Product_id = ? AND user_id = ?");
+    $stmt = mysqli_prepare($GLOBALS['conn'], "DELETE FROM cart WHERE Product_id = ? AND user_id = ?;");
     mysqli_stmt_bind_param($stmt, 'ii', $p_id, $user);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
-   break;
+    break;
   }
   }
-   if(isset($NewQuantity)){echo $NewQuantity;exit;}
-   else{exit;}}
+   if(isset($NewQuantity)){echo $NewQuantity;exit;}else{exit;}
+   }
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -150,11 +150,12 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
      <p class="product_title" style="margin-left: 1.5rem; margin-top: 8rem;">Shopping Cart</p>
      <section id="cartLayout">
       <?php  $total=0;
-                foreach($result as $cart_item) {
+                while($cart_item=mysqli_fetch_assoc($result)) {
                   $quantity=$cart_item['Quantity'];
                   if($quantity>=1){
        ?>
-        <div class="cart_items" id="cart_item-<?php echo $prod; ?>">
+        <div class="cart_items" name="cart_item" id="cart_item-<?php echo $prod; ?>" 
+           hx-post="delete" hx-trigger="click" hx-swap="outerHTML" hx-target="this">
             <img src="<?php echo $cart_item['Image_path']; ?>" class="cart_item_image">
             <ul>
                 <a href="Product View page.php?product_id=<?php echo htmlspecialchars($cart_item['Product_id']); ?>">
@@ -164,7 +165,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                 <li class="cart_item_description"><?php $product_desc = htmlspecialchars($cart_item['Brief_Description']); 
                                           echo strlen($product_desc) > 25 ? substr($product_desc, 0, 25)
                                           . '...' : $product_desc; ?></li>
-                <li class="cart_item_price">
+                <li class="cart_item_price" id="price">
                   $<?php $price=(int)$cart_item['Price'] * (int)$quantity; echo $price;
                    $total=$total+$price; $prod=$cart_item['Product_id'];?>
                 </li>
@@ -186,10 +187,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                    class="cart_buttons"
                   id="increment">+</button>
                   <button 
-                  hx-delete="/delete-item"
                   hx-post=""
-                  hx-target="#cart_item-<?php echo $prod; ?>"
-                  hx-swap="outerHTML" 
                   hx-vals='{
                   "action": "trash",
                   "product_id":<?php echo json_encode($prod);?>}'
@@ -206,7 +204,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
      </section>
 
      <footer>
-
             <div class="footer-container">
               <div class="footer-section links">
                 <p class="footer_headings">Quick Links</p>

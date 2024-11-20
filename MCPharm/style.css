@@ -625,7 +625,8 @@ word-break: normal;
 
 .addto_cart{
 border-radius: 1rem;
-border: #ffffff 2rem;
+border: #adadad 0.1rem;
+border-style: solid;
 width: 9rem;
 height: 4rem;
 color: #ffffff;
@@ -639,10 +640,7 @@ box-shadow: 0 1.5rem 3rem -0.75rem hsla(0, 0%, 0%, 0.25);
 .addto_cart:hover{
 color:#9c0707;
 background-color: white;
-font-weight: bold;
 cursor: pointer;
-border: 0.1rem #9c0707;
-border-style: solid;
 box-shadow: 0 1.5rem 3rem -0.75rem hsla(0, 0%, 0%, 0.811); 
 }
 /*Related products menu*/

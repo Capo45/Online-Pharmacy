@@ -17,47 +17,33 @@ function generateRandomUserId() {
 }
 if(!isset($_SESSION['user_id'])){
   $_SESSION['user_id']=generateRandomUserId();
-  $stmt = $mysqli->prepare("INSERT INTO users (user_id) VALUES (?)");
-  $stmt->bind_param("i", $_SESSION['user_id']);
+  $stmt = mysqli_prepare($conn,"INSERT INTO users (user_id) VALUES (?)");
+  mysqli_stmt_bind_param($stmt,"i", $_SESSION['user_id']);
+  mysqli_stmt_execute($stmt);
+  mysqli_stmt_close($stmt);
 } 
  $user=$_SESSION['user_id'];
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
-      $cart_id = $_POST['product_id'];
-      if(isset($_POST['quantity'])){
-      $quantity = $_POST['quantity'];}else{$quantity=1;}
-      $action=$_POST['action'];
+    $action = $_POST['action'];
+    $cart_id = $_POST['product_id'];
+    $quantity= $_POST['passquantity']??1;
       switch($action){
-        case'add_to_cart':{
-          $stmt = $conn->prepare("INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE Quantity=Quantity+$quantity;");
-          $stmt->bind_param("iii", $cart_id, $quantity,$user); 
+        case'add_to_cart':{ 
+          $stmt =  mysqli_prepare($conn,"INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE Quantity=Quantity+?;");
+          mysqli_stmt_bind_param($stmt,"iiii", $cart_id, $quantity,$user,$quantity); 
           mysqli_stmt_execute($stmt);
           mysqli_stmt_close($stmt);
           break;
         }
         case'add_related':{
-          $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id,Quantity) VALUES (?,?,'1')ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
-          $stmt->bind_param("ii", $cart_id,$user); 
+          $stmt = mysqli_prepare($conn,"INSERT INTO cart (Product_id,user_id,Quantity) VALUES (?,?,'1')ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
+                  mysqli_stmt_bind_param($stmt,"ii", $cart_id,$user); 
+                  mysqli_stmt_execute($stmt);
+                  mysqli_stmt_close($stmt);
           break;
         }
-        case'increment':{
-          $quantity++;
-          $NewQuantity= $quantity;
-          $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
-                mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $cart_id, $user);
-                mysqli_stmt_execute($stmt);
-                mysqli_stmt_close($stmt);
-          break;
-        }
-        case'decrement':{
-          $NewQuantity = max(1, $quantity - 1);
-          $quantity = $NewQuantity;
-          $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
-                mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $cart_id, $user);
-                mysqli_stmt_execute($stmt);
-                mysqli_stmt_close($stmt);
-                break;
-          }
       }
+      exit;
   }
 
    if (isset($_GET['product_id'])) {  
@@ -69,7 +55,7 @@ if(!isset($_SESSION['user_id'])){
     $result = $conn->query($sql);
     $related = $conn->query($related);
    }
-   if(isset($NewQuantity)){echo $NewQuantity; exit;}
+
 ?> 
 <!DOCTYPE HTML>
 <html>
@@ -152,45 +138,34 @@ if(!isset($_SESSION['user_id'])){
      </section>
         <br>
         <br>
-        <?php
-        while($row=mysqli_fetch_assoc($result)){
-          if(isset($quantity)){echo $quantity;} else{ $quantity=1; echo $quantity;}
+        <?php 
+        while($row=mysqli_fetch_assoc($result)){    
         ?>
         <section id="product_section">
             <div class="product_layout"><img src="<?php echo $row["Image_path"];?>" class="product_image">
                <div>
                 <ul class="product_description" style="width:40rem;">
                   <li class="product_title"><?php echo htmlspecialchars($row["Product_Name"]);?></li>
-                  <li style="word-break: break-all;hyphens: auto; /* Enable automatic hyphenation */
-                              overflow-wrap: break-word;
-                              word-wrap: break-word;"><?php echo htmlspecialchars($row["Brief_Description"]);?></li>
+                  <li style="word-break: break-all; overflow-wrap: break-word;
+                  word-wrap: break-word; text-align:center;">
+                  <?php echo htmlspecialchars($row["Brief_Description"]);?></li>
                   <li style="color: #9c0707; font-size: 2rem;">$ <?php echo htmlspecialchars($row["Price"]);?></li>
                    <li><label style="font-size: 2.5rem;color:#9c0707;">Quantity: </label>
-                  <button hx-post="" hx-target="#quantity" hx-swap="innerHTML"
-                  hx-vals='{
-                  "action":"decrement",
-                  "product_id": <?php echo json_encode($row["Product_id"] ); ?>,
-                  "quantity":<?php echo json_encode($quantity); ?>}'
-                   class="cart_buttons" id="decrement">-</button>
+                  <button class="cart_buttons" id="decrement" onclick="decrement()">-</button>
                   <span name="quantity" id="quantity"
-                  style="font-size: 1.5rem; 
+                        style="font-size: 1.5rem; 
                         padding:0.5rem; 
-                        color:#9c0707;"><?php echo $quantity; ?></span>
-                  <button hx-post="" hx-target="#quantity" hx-swap="innerHTML"
-                  hx-vals='{
-                  "action":"increment",
-                  "product_id": <?php echo json_encode($row["Product_id"] ); ?>,
-                  "quantity":<?php echo json_encode($quantity); ?>
-                  }'
-                   class="cart_buttons"
-                  id="increment">+</button>
+                        color:#9c0707;">1</span>
+                        <input type="hidden" id="passquantity" name="passquantity" value="1">
+                  <button class="cart_buttons" id="increment" onclick="increment()">+</button>
+                  <?php ?>
                   &nbsp;&nbsp;&nbsp;&nbsp;
                     <button 
-                    hx-post="" hx-vals='{
+                    hx-post="" 
+                    hx-include="#passquantity"
+                    hx-vals='{
                     "product_id":<?php echo json_encode($row["Product_id"]) ; ?> , 
-                    "action":"add_to_cart",
-                    "quantity":<?php echo json_encode($quantity); ?>}'
-                    hx-trigger="click" hx-on="htmx:afterRequest: alert('Product added to cart')"
+                    "action":"add_to_cart"}'
                     class="addto_cart">Add To Cart</button></li>
                 </ul>
              </div>
@@ -207,7 +182,6 @@ if(!isset($_SESSION['user_id'])){
         <section  id="related">
           <?php 
          while($recco=mysqli_fetch_assoc($related)){
-          $quantity=1;
         ?>
         <div class="product-box">
         <img class="product-image" src="<?php echo $recco["Image_path"]; ?>" class="advice_images">
@@ -226,10 +200,8 @@ if(!isset($_SESSION['user_id'])){
                                           echo strlen($product_description) > 25 ? substr($product_description, 0, 25) 
                                           . '...' : $product_description; ?></p>
           <p class="product-description">$<?php echo $recco["Price"]; ?></p>
-            <input type="hidden" name="id" value="<?php echo $recco['Product_id']; ?>">
-            <input type="hidden" name="quantity" value="1">
             <button 
-            hx-post="" hx-vals='{"product_id":<?php echo $recco["Product_id"] ; ?> , "action":"add_related"}'
+            hx-post="" hx-vals='{"product_id":<?php echo $recco['Product_id'] ; ?> , "action":"add_related"}'
             hx-trigger="click" hx-on="htmx:afterRequest: alert('Product added to cart')"
             class="add-to-cart-btn">Add to Cart</button>
       </div>       
@@ -280,9 +252,25 @@ if(!isset($_SESSION['user_id'])){
             function openNav() {
                 document.getElementById("sidenav").classList.add("active");
             }
-
             function closeNav() {
                 document.getElementById("sidenav").classList.remove("active");
+            }
+            function increment(){
+              let quantityElement=document.getElementById("quantity");
+              let quantity=parseInt(quantityElement.textContent);
+              quantity++;
+              quantityElement.textContent=quantity;
+              let passquantity=document.getElementById("passquantity");
+              passquantity.value=quantity;
+            }
+            function decrement(){
+              let quantityElement=document.getElementById("quantity");
+              let quantity=parseInt(quantityElement.textContent);
+              if(quantity>1){
+              quantity--;}
+              quantityElement.textContent=quantity; 
+              let passquantity=document.getElementById("passquantity");
+              passquantity.value=quantity;
             }
         </script>
     </body>
