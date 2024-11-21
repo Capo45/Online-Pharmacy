@@ -25,13 +25,9 @@ if(!isset($_SESSION['user_id'])){
       $cart_id = $_POST['id'];
       $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id, Quantity) VALUES (?,?,'1') ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
       $stmt->bind_param("ii", $cart_id,$user); 
-      
-      if ($stmt->execute()) {
-          echo "<h4>Product added to cart successfully.</h4>";
-      } else {
-          echo "Error adding product to cart: " . $stmt->error;
-      }
+      if($stmt->execute()){echo "<div class='added_alert'>Product added to cart successfully</div>";}
       $stmt->close();
+      exit;
   }
 } catch (Exception $e) {
   echo "Error: " . $e->getMessage();
@@ -57,20 +53,21 @@ elseif (isset($_GET['sub_category'])) {
 
 <html>
     <head>
-        <title>Online Pharmacy website</title>
+        <title>Search Results</title>
         <meta charset="UTF-8">
         <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
         <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
         <meta name="author" content="MCPharm">
         <meta name="viewport" content="width=device-width, initial-scale=0.75">
         <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="Images/Navigation bar/tab icon.png" type="image/png">
         <script src="https://unpkg.com/htmx.org@1.9.2"></script>
     </head>
     <body>
     <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
     <section class="navigation_bar">
     <div class="sidenav" id="sidenav">
-    <div id="sidemenu_top"><a href="index2.html"><img src="Images/Navigation bar/sidelogo.png" id="side-logo"></a> 
+    <div id="sidemenu_top"><a href="index2.html"><img src="Images/Navigation bar/logo.png" id="side-logo"></a> 
             <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
      <div class="categories">
         <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
@@ -124,13 +121,14 @@ elseif (isset($_GET['sub_category'])) {
                     <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
                     <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>  
                         <form action="Search results page.php" method="GET">
-                       <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
+                       <div class="searchbar_wrapper"><input type="search" placeholder="Search" name="Searchbar"
                         class="searchbar">
                            </div>
                        </form> 
                         <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png" id="cart_icon"></a>
             </div>
      </section>
+     <div id="notification-area"></div>
      <section class="SRP_section">
      <?php
       while($item=mysqli_fetch_assoc($result))
@@ -154,8 +152,8 @@ elseif (isset($_GET['sub_category'])) {
                                           . '...' : $product_description; ?></p>
           <p class="product-description">$<?php echo htmlspecialchars($item['Price']); ?></p>
             <input type="button" hx-post="" hx-vals='{"id":<?php echo $item['Product_id'];?>}'
-            hx-trigger="click" hx-on="htmx:afterRequest: alert('Product added to cart')"
-            class="add-to-cart-btn" name="add_to_cart" value="Add To Cart">
+            hx-target="#notification-area" hx-swap="innerHTML" class="add-to-cart-btn" name="add_to_cart" 
+            value="Add To Cart">
       </div>
       <?php
       }
@@ -210,6 +208,15 @@ elseif (isset($_GET['sub_category'])) {
             function closeNav() {
                 document.getElementById("sidenav").classList.remove("active");
             }
+            document.addEventListener('htmx:afterSwap', (event) => {
+        if (event.detail.target.id === 'notification-area') {
+            const notification = event.detail.target.querySelector('.added_alert');
+            if (notification) {
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);}
+            }
+              });
         </script>
 </body>
 

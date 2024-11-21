@@ -41,39 +41,23 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
   }
 ?>
 
-
 <!DOCTYPE HTML>
-
 <html>
-
     <head>
-
-        <title>Online Pharmacy website</title>
-
+        <title>Delivery Details Form</title>
         <meta charset="UTF-8">
-
         <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
-
         <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
-
         <meta name="author" content="MCPharm">
-
         <meta name="viewport" content="width=device-width, initial-scale=0.75">
-
+        <link rel="icon" href="Images/Navigation bar/tab icon.png" type="image/png">
         <link rel="stylesheet" href="style.css">
-
     </head>
 
-    
-
     <body>
-
-        <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
-
-        <section class="navigation_bar">
-   
+    <section class="navigation_bar">
     <div class="sidenav" id="sidenav">
-    <div id="sidemenu_top"><a href="index2.html"><img src="Images/Navigation bar/sidelogo.png" id="side-logo"></a> 
+    <div id="sidemenu_top"><a href="index2.html"><img src="Images/Navigation bar/logo.png" id="side-logo"></a> 
     <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
      <div class="categories">
         <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
@@ -124,174 +108,99 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         </div>
     </div>
     </div>
-            <div class="strp">
-                    <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
-                    <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>
-                    
-                    
-                        <form action="Search results page.php" method="GET">
-                       <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
-                        class="searchbar">
-                           </div>
-                       </form> 
-                        <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
-            </div>
+    <div class="strp">
+      <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
+      <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>
+        
+       <form action="Search results page.php" method="GET">
+         <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
+            class="searchbar">
+         </div></form> 
+         <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
+     </div>
      </section>
 
-   
-
    <section class="details_section">
-
    <form method="POST">
-
    <div class="details_container" style="animation: details 1s;">
-
     <p class="product_title" style="margin-left: 1rem;">Delivery Details</p>
-
     <ul>
-
         <li><label class="details">Name: </label><br><input class="fields" type="text" name="name" required></li><br>
-
         <li><label class="details">Surname: </label><br><input class="fields" type="text" name="surname" required></li>
-
         <li><label class="details">Address 1:</label><br><input class="fields" type="text" name="address1" placeholder="State, City...." required></li><br>
-
         <li><label class="details">Address 2:<label><br><input class="fields" type="text" name="address2" placeholder="Street, Building...."></li><br>
-
         <li><label class="details">Postal code:</label><input id="mini" class="fields" type="number" name="postalCode" maxlength="5" required><br><br>
-
         <label class="details">Floor: </label><input id="mini"  class="fields" type="number" name="floor" required><br><br>   
-
         <label class="details">Apartment:</label><input id="mini"  class="fields" type="number" name="apartment" required></li><br>
-
         <li><label class="details">Phone:</label><br><input class="fields" type="tel" name="Phone" placeholder="Ex: (123) 456 789"
-
          maxlength="10" minlength="10" required></li><br>
-
         <li><label class="details">Email:</label><br><input class="fields" type="email" name="email" placeholder="Ex: 123@email.com" required></li><br>
-
         <li><label class="details">Additional Comments:</label><br><input id="comment" class="fields" type="text" name="comments" placeholder="Additional comments" maxlength="50"></li>
-
     </ul>
 
     <input class="place_order" type="submit" value="Place Order">
-
    </div></form>
 
    <div class="details_container" style="animation: bills 2s;"><p class="product_title" style="margin-left: 1rem;">Items</p>
-
    <div style="background-color: #ec4747a2; border-radius:0.5rem;border-style:none;padding:0.5rem"><?php $total=0;
-
      while($items=mysqli_fetch_assoc($result)){
-
         $product_name=$items['Product_Name'];
-
         $quantity=$items['Quantity'];
-
         $price=(int)$items['Price'] * (int)$items['Quantity'];
-
         $total=$total+$price;
-
    ?>
 
    <p class="bill"><?php echo $quantity; echo"X "; echo $product_name; echo ":   $"; echo $price;?></p>  
-
    <?php } ?></div>
-
    <p class="bill" id="total">Your total is: $<?php echo $total ?></p>
-
    </div>
-
    </section>
 
-        <!--Page Footer containing payment options, links to relevant pages and contact tools-->
+  <footer>
+     <div class="footer-container">
+     <div class="footer-section links">
+       <p class="footer_headings">Quick Links</p>
+         <ul>
+         <li><a href="#" class="footer_link">About Us</a></li>
+         <li><a href="#" class="footer_link">Services</a></li>
+         <li><a href="#" class="footer_link">Contact</a></li>
+         <li><a href="#" class="footer_link">FAQ</a></li>
+        </ul>
+     </div>
 
-        <footer>
+      <div class="footer-section payment-methods">
+        <p class="footer_headings">Payment Methods</p>
+           <img src="Images/Footer/Visa_Logo.png" alt="Visa"><br>
+           <img src="Images/Footer/MasterCard_logo.png" alt="Mastercard"><br>
+           <img src="Images/Footer/Paypal-logo.png" alt="PayPal">
+      </div>
 
-            <div class="footer-container">
-
-              <div class="footer-section links">
-
-                <p class="footer_headings">Quick Links</p>
-
-                <ul>
-
-                  <li><a href="#" class="footer_link">About Us</a></li>
-
-                  <li><a href="#" class="footer_link">Services</a></li>
-
-                  <li><a href="#" class="footer_link">Contact</a></li>
-
-                  <li><a href="#" class="footer_link">FAQ</a></li>
-
-                </ul>
-
-              </div>
-
-          
-
-              <div class="footer-section payment-methods">
-
-                <p class="footer_headings">Payment Methods</p>
-
-                <img src="Images/Footer/Visa_Logo.png" alt="Visa"><br>
-
-                <img src="Images/Footer/MasterCard_logo.png" alt="Mastercard"><br>
-
-                <img src="Images/Footer/Paypal-logo.png" alt="PayPal">
-
-              </div>
-
-          
-
-              <div class="footer-section contact-info">
-
-                <p class="footer_headings">Contact Us</p>
-
-                <p>123 Main Street, City, Country</p>
-
-                <p>Email: info@example.com</p>
-
-                <p>Phone: +1 234 567 8900</p>
-
-              </div>
-
-          
+      <div class="footer-section contact-info">
+           <p class="footer_headings">Contact Us</p>
+           <p>123 Main Street, City, Country</p>
+           <p>Email: info@example.com</p>
+           <p>Phone: +1 234 567 8900</p>
+      </div>
 
               <div class="footer-section social-media">
-
                 <p class="footer_headings">Follow Us</p>
-
                 <a href="#"><img src="Images/Footer/insta_logo_black.png" alt="Instagram"></a>
-
                 <a href="#"><img src="Images/Footer/tiktok_icon_black.png" alt="TikTok"></a>
-
                 <a href="#"><img src="Images/Footer/whatsapp_logo.png" alt="Whatsapp"></a>
-
               </div>
-
             </div>
-
-          
-
+      
             <div class="copyright">
-
               <p>&copy; 2024 MCPharm. All rights reserved.</p>
-
             </div>
-
           </footer>
-          <script>
-            function openNav() {
-                document.getElementById("sidenav").classList.add("active");
-            }
 
-            function closeNav() {
-                document.getElementById("sidenav").classList.remove("active");
-            }
-        </script>
+   <script>
+    function openNav() {
+     document.getElementById("sidenav").classList.add("active");}
+
+   function closeNav() {
+    document.getElementById("sidenav").classList.remove("active");}
+    </script>
     </body>
-
-    
-
 </html>

@@ -32,6 +32,7 @@ if(!isset($_SESSION['user_id'])){
           $stmt =  mysqli_prepare($conn,"INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE Quantity=Quantity+?;");
           mysqli_stmt_bind_param($stmt,"iiii", $cart_id, $quantity,$user,$quantity); 
           mysqli_stmt_execute($stmt);
+          if($stmt->execute()){echo "<div class='added_alert'>Product added to cart successfully</div>";}
           mysqli_stmt_close($stmt);
           break;
         }
@@ -39,6 +40,7 @@ if(!isset($_SESSION['user_id'])){
           $stmt = mysqli_prepare($conn,"INSERT INTO cart (Product_id,user_id,Quantity) VALUES (?,?,'1')ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
                   mysqli_stmt_bind_param($stmt,"ii", $cart_id,$user); 
                   mysqli_stmt_execute($stmt);
+                  if($stmt->execute()){echo "<div class='added_alert'>Product added to cart successfully</div>";}
                   mysqli_stmt_close($stmt);
           break;
         }
@@ -60,21 +62,22 @@ if(!isset($_SESSION['user_id'])){
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>Online Pharmacy website</title>
+        <title>Product View</title>
         <meta charset="UTF-8">
         <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
         <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
         <meta name="author" content="MCPharm">
         <meta name="viewport" content="width=device-width, initial-scale=0.75"> 
         <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="Images/Navigation bar/tab icon.png" type="image/png">
         <script src="https://unpkg.com/htmx.org@1.9.2"></script>
     </head>
 
     <body>
-        <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
+
         <section class="navigation_bar">
     <div class="sidenav" id="sidenav">
-        <div id="sidemenu_top"><img src="Images/Navigation bar/sidelogo.png" id="side-logo"> 
+        <div id="sidemenu_top"><img src="Images/Navigation bar/logo.png" id="side-logo"> 
             <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
      <div class="categories">
         <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
@@ -124,25 +127,26 @@ if(!isset($_SESSION['user_id'])){
         </div>
     </div>
     </div>
-            <div class="strp">
-                    <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
-                    <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>      
+    <div class="strp">
+      <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
+      <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>      
                     
-                        <form action="Search results page.php" method="GET">
-                       <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
-                        class="searchbar">
-                           </div>
-                       </form> 
-                        <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
-            </div>
+       <form action="Search results page.php" method="GET">
+         <div class="searchbar_wrapper">
+          <input type="search" placeholder="Search" name="Searchbar" class="searchbar">
+         </div>
+       </form> 
+       <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
+    </div>
      </section>
         <br>
         <br>
         <?php 
         while($row=mysqli_fetch_assoc($result)){    
-        ?>
+        ?><div id="notification-area"></div>
         <section id="product_section">
-            <div class="product_layout"><img src="<?php echo $row["Image_path"];?>" class="product_image">
+            <div class="product_layout">
+              <img src="<?php echo $row["Image_path"];?>" class="product_image">
                <div>
                 <ul class="product_description" style="width:40rem;">
                   <li class="product_title"><?php echo htmlspecialchars($row["Product_Name"]);?></li>
@@ -166,7 +170,10 @@ if(!isset($_SESSION['user_id'])){
                     hx-vals='{
                     "product_id":<?php echo json_encode($row["Product_id"]) ; ?> , 
                     "action":"add_to_cart"}'
-                    class="addto_cart">Add To Cart</button></li>
+                    hx-target="#notification-area"
+                    hx-swap="innerHTML"
+                    class="addto_cart">Add To Cart</button>
+                    </li>
                 </ul>
              </div>
             </div>
@@ -185,25 +192,18 @@ if(!isset($_SESSION['user_id'])){
         ?>
         <div class="product-box">
         <img class="product-image" src="<?php echo $recco["Image_path"]; ?>" class="advice_images">
-          <a href="Product View page.php?product_id=<?php echo $recco['Product_id']; ?>"
-           style="text-decoration: none;
-           font-size: 1.125rem;
-           font-weight: bold;
-           margin-bottom: 0.5rem;
-           padding-left:1rem;
-           padding-top:1.5rem;
-           padding-right:0.3rem;
-          color: #000000;"><?php $product_name = $recco["Product_Name"]; 
+          <a href="Product View page.php?product_id=<?php echo $recco['Product_id']; ?>">
+            <?php $product_name = $recco["Product_Name"]; 
                                           echo strlen($product_name) > 25 ? substr($product_name, 0, 25)
                                           . '...' : $product_name; ?></a>
-         <p class="product-description"><?php $product_description = $recco["Brief_Description"]; 
-                                          echo strlen($product_description) > 25 ? substr($product_description, 0, 25) 
-                                          . '...' : $product_description; ?></p>
+         <p class="product-description">
+          <?php $product_description = $recco["Brief_Description"]; 
+                                       echo strlen($product_description) > 25 ? substr($product_description, 0, 25) 
+                                        . '...' : $product_description; ?></p>
           <p class="product-description">$<?php echo $recco["Price"]; ?></p>
             <button 
             hx-post="" hx-vals='{"product_id":<?php echo $recco['Product_id'] ; ?> , "action":"add_related"}'
-            hx-trigger="click" hx-on="htmx:afterRequest: alert('Product added to cart')"
-            class="add-to-cart-btn">Add to Cart</button>
+            hx-target="#notification-area" hx-swap="innerHTML" class="add-to-cart-btn">Add to Cart</button>
       </div>       
        <?php
          }
@@ -272,6 +272,15 @@ if(!isset($_SESSION['user_id'])){
               let passquantity=document.getElementById("passquantity");
               passquantity.value=quantity;
             }
+            document.addEventListener('htmx:afterSwap', (event) => {
+        if (event.detail.target.id === 'notification-area') {
+            const notification = event.detail.target.querySelector('.added_alert');
+            if (notification) {
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);}
+            }
+              });
         </script>
     </body>
 </html>

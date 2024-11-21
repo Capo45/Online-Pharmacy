@@ -74,20 +74,21 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>Online Pharmacy website</title>
+        <title>Cart</title>
         <meta charset="UTF-8">
         <meta name="description" content="MCPharm is your trusted online pharmacy offering medications, wellness products, supplements, dental care, and cosmetics with fast delivery and personalized support.">
         <meta name="keywords" content="online pharmacy, medications, supplements, dental health, cosmetics, wellness products, MCPharm">
         <meta name="author" content="MCPharm">
         <meta name="viewport" content="width=device-width, initial-scale=0.75">
         <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="Images/Navigation bar/tab icon.png" type="image/png">
         <script src="https://unpkg.com/htmx.org@1.9.2"></script>
     </head>
     <body>
         <section class="navigation_bar">
    
     <div class="sidenav" id="sidenav">
-    <div id="sidemenu_top"><a href="index2.html"><img src="Images/Navigation bar/sidelogo.png" id="side-logo"></a> 
+    <div id="sidemenu_top"><a href="index2.html"><img src="Images/Navigation bar/logo.png" id="side-logo"></a> 
             <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
      <div class="categories">
         <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
@@ -141,13 +142,15 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                     <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
                     <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>                  
       <form action="Search results page.php" method="GET">
-        <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar" class="searchbar">
+        <div class="searchbar_wrapper"><input type="search" placeholder="Search" name="Searchbar" class="searchbar">
         </div>
       </form> 
          <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
        </div>
      </section>
+     <div id="notification-area"></div>
      <p class="product_title" style="margin-left: 1.5rem; margin-top: 8rem;">Shopping Cart</p>
+     
      <section id="cartLayout">
       <?php  $total=0;
                 while($cart_item=mysqli_fetch_assoc($result)) {
@@ -191,7 +194,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                   hx-vals='{
                   "action": "trash",
                   "product_id":<?php echo json_encode($prod);?>}'
-                  class="cart_buttons" id="trash">
+                  class="cart_buttons" id="trash" 
                   <img src="Images/trash.png " style="width: 1rem;height:1rem;"></button></li>
            </ul>
         </div>
@@ -248,6 +251,15 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             function closeNav() {
                 document.getElementById("sidenav").classList.remove("active");
             }
+            document.addEventListener('htmx:afterSwap', (event) => {
+        if (event.detail.target.id === 'notification-area') {
+            const notification = event.detail.target.querySelector('.added_alert');
+            if (notification) {
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);}
+            }
+              });
         </script>
     </body>
 </html>
