@@ -1,18 +1,16 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
  session_start();
- $config = require 'config.php';  // Or use getenv() if using .env
- $db_host = $config['DB_HOST'];
- $db_user = $config['DB_USER'];
- $db_password = $config['DB_PASSWORD'];
- $db_name = $config['DB_NAME'];
- $db_port = $config['DB_PORT'];  // Use the port, even if it's 3306
+
+ $db_host = getenv('DB_HOST');
+ $db_user = getenv('DB_USER');
+ $db_password = getenv('DB_PASSWORD');
+ $db_name = getenv('DB_NAME');
+ $db_port = getenv('DB_PORT');  
  
  $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
  function generateRandomUserId() {
-  return random_int(100000, 999999); // Generates a random 6-digit number
+  return random_int(100000, 999999); 
 }
 if(!isset($_SESSION['user_id'])){
   $_SESSION['user_id']=generateRandomUserId();
@@ -67,7 +65,7 @@ elseif (isset($_GET['sub_category'])) {
     <!--Navigation bar on top of page implemented using a table and unordered lists for submenus-->
     <section class="navigation_bar">
     <div class="sidenav" id="sidenav">
-    <div id="sidemenu_top"><a href="index2.html"><img src="Images/Navigation bar/logo.png" id="side-logo"></a> 
+    <div id="sidemenu_top"><a href="index.html"><img src="Images/Navigation bar/logo.png" id="side-logo"></a> 
             <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
      <div class="categories">
         <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
@@ -119,7 +117,7 @@ elseif (isset($_GET['sub_category'])) {
     </div>
             <div class="strp">
                     <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
-                    <a href="index2.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>  
+                    <a href="index.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>  
                         <form action="Search results page.php" method="GET">
                        <div class="searchbar_wrapper"><input type="search" placeholder="Search" name="Searchbar"
                         class="searchbar">
