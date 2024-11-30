@@ -3,16 +3,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
  session_start();
- $db_host = getenv('DB_HOST');
- $db_user = getenv('DB_USER');
- $db_password = getenv('DB_PASSWORD');
- $db_name = getenv('DB_NAME');
- $db_port = getenv('DB_PORT');  
+ $config = require 'config.php';  
+$db_host = $config['DB_HOST'];
+$db_user = $config['DB_USER'];
+$db_password = $config['DB_PASSWORD'];
+$db_name = $config['DB_NAME'];
+$db_port = $config['DB_PORT']; 
 $conn="";
 
 $conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
 function generateRandomUserId() {
-  return random_int(100000, 999999); // Generates a random 6-digit number
+  return random_int(100000, 999999); 
 }
 if(!isset($_SESSION['user_id'])){
   $_SESSION['user_id']=generateRandomUserId();
@@ -31,7 +32,7 @@ if(!isset($_SESSION['user_id'])){
           $stmt =  mysqli_prepare($conn,"INSERT INTO cart (Product_id, Quantity,user_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE Quantity=Quantity+?;");
           mysqli_stmt_bind_param($stmt,"iiii", $cart_id, $quantity,$user,$quantity); 
           mysqli_stmt_execute($stmt);
-          if($stmt->execute()){echo "<div class='added_alert'>Product added to cart successfully</div>";}
+           echo "<div class='added_alert'>Product added to cart successfully</div>";
           mysqli_stmt_close($stmt);
           break;
         }
@@ -39,11 +40,12 @@ if(!isset($_SESSION['user_id'])){
           $stmt = mysqli_prepare($conn,"INSERT INTO cart (Product_id,user_id,Quantity) VALUES (?,?,'1')ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
                   mysqli_stmt_bind_param($stmt,"ii", $cart_id,$user); 
                   mysqli_stmt_execute($stmt);
-                  if($stmt->execute()){echo "<div class='added_alert'>Product added to cart successfully</div>";}
+                  echo "<div class='added_alert'>Product added to cart successfully</div>";
                   mysqli_stmt_close($stmt);
           break;
         }
       }
+      $_SESSION['cart'][$cart_id]=$quantity;
       exit;
   }
 
@@ -170,7 +172,7 @@ if(!isset($_SESSION['user_id'])){
                     "product_id":<?php echo json_encode($row["Product_id"]) ; ?> , 
                     "action":"add_to_cart"}'
                     hx-target="#notification-area"
-                    hx-swap="innerHTML"
+                    hx-swap="outerHTML"
                     class="addto_cart">Add To Cart</button>
                     </li>
                 </ul>

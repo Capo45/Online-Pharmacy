@@ -3,11 +3,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
  session_start();
- $db_host = getenv('DB_HOST');
- $db_user = getenv('DB_USER');
- $db_password = getenv('DB_PASSWORD');
- $db_name = getenv('DB_NAME');
- $db_port = getenv('DB_PORT');  
+ $config = require 'config.php';  
+ $db_host = $config['DB_HOST'];
+ $db_user = $config['DB_USER'];
+ $db_password = $config['DB_PASSWORD'];
+ $db_name = $config['DB_NAME'];
+ $db_port = $config['DB_PORT']; 
 $GLOBALS['conn']="";
 
 $GLOBALS['conn']=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
@@ -32,29 +33,31 @@ $result = mysqli_query($GLOBALS['conn'],$item);
 if($_SERVER["REQUEST_METHOD"]=="POST"){
   $action=$_POST['action'];
   $p_id=$_POST['product_id'];
+  $quantity=$_POST['quantity'];
 
   switch($action){
     case'Confirm Order':{
       header("Location: Delivery Details.php");
       exit;
     }
-
     case'increment':{
-      $_SESSION['quantity']++;
-      $NewQuantity= $_SESSION['quantity'];
+      $quantity++;
+      $NewQuantity= $quantity;
       $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
             mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $p_id, $user);
             mysqli_stmt_execute($stmt);
+            $_SESSION['cart'][$p_id]=$NewQuantity;
             mysqli_stmt_close($stmt);
       break;
     }
 
     case'decrement':{
-      $NewQuantity = max(1, $_SESSION['quantity'] - 1);
-      $_SESSION['quantity'] = $NewQuantity;
+      $NewQuantity = max(1, $quantity - 1);
+      $NewQuantity;
       $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
             mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $p_id, $user);
             mysqli_stmt_execute($stmt);
+            $_SESSION['cart'][$p_id]=$NewQuantity;
             mysqli_stmt_close($stmt);
             break;
       }
@@ -67,7 +70,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     break;
   }
   }
-   if(isset($NewQuantity)){echo $NewQuantity;exit;}else{exit;}
+  if(isset($NewQuantity)){echo $NewQuantity;exit;}else{exit;}
    }
 ?>
 <!DOCTYPE HTML>
@@ -153,14 +156,15 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
      <section id="cartLayout">
       <?php  $total=0;
                 while($cart_item=mysqli_fetch_assoc($result)) {
-                  $quantity=$cart_item['Quantity'];
+                  $prod=$cart_item['Product_id'];
+                  $quantity=$_SESSION['cart'][$prod];
                   if($quantity>=1){
        ?>
         <div class="cart_items" name="cart_item" id="cart_item-<?php echo $prod; ?>" 
-           hx-post="delete" hx-trigger="click" hx-swap="outerHTML" hx-target="this">
+             hx-post="delete" hx-trigger="from:trash" hx-swap="outerHTML" hx-target="this">
             <img src="<?php echo $cart_item['Image_path']; ?>" class="cart_item_image">
             <ul>
-                <a href="Product View page.php?product_id=<?php echo htmlspecialchars($cart_item['Product_id']); ?>">
+                <a href="Product View page.php?product_id=<?php echo htmlspecialchars($prod); ?>">
                   <li class="cart_item_title"><?php $product_name = htmlspecialchars($cart_item['Product_Name']); 
                                           echo strlen($product_name) > 25 ? substr($product_name, 0, 25)
                                           . '...' : $product_name; ?></li></a>
@@ -169,30 +173,33 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                                           . '...' : $product_desc; ?></li>
                 <li class="cart_item_price" id="price">
                   $<?php $price=(int)$cart_item['Price'] * (int)$quantity; echo $price;
-                   $total=$total+$price; $prod=$cart_item['Product_id'];?>
+                   $total=$total+$price;?>
                 </li>
 
                 <li>
                   <button hx-post="" hx-target="#quantity-<?php echo $prod; ?>" hx-swap="innerHTML"
                   hx-vals='{
                   "action":"decrement",
-                  "product_id": <?php echo json_encode($prod); ?>}'
+                  "product_id": <?php echo json_encode($prod); ?>,
+                  "quantity":<?php echo json_encode($quantity);?>}'
                    class="cart_buttons" id="decrement">-</button>
                   <span name="quantity" id="quantity-<?php echo $prod; ?>"
-                  style="font-size: 1.5rem; 
-                        padding:0.5rem; 
-                        color:#9c0707;"><?php echo $quantity;?></span>
+                  style="font-size: 1.5rem; padding:0.5rem; color:#9c0707;">
+                   <?php echo $_SESSION['cart'][$prod];?>
+                  </span>
                   <button hx-post="" hx-target="#quantity-<?php echo $prod; ?>" hx-swap="innerHTML"
                   hx-vals='{
                   "action":"increment",
-                  "product_id": <?php echo json_encode($prod); ?>}'
+                  "product_id": <?php echo json_encode($prod); ?>,
+                  "quantity":<?php echo json_encode($quantity);?>}'
                    class="cart_buttons"
                   id="increment">+</button>
                   <button 
                   hx-post=""
                   hx-vals='{
                   "action": "trash",
-                  "product_id":<?php echo json_encode($prod);?>}'
+                  "product_id":<?php echo json_encode($prod);?>,
+                  "quantity":<?php echo json_encode($quantity);?>}'
                   class="cart_buttons" id="trash">
                   <img src="Images/trash.png " style="width: 1rem;height:1rem;"></button></li>
            </ul>
@@ -200,7 +207,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         <?php  }}
          if($result->num_rows>=1){
         ?>
-        <p class="cart_item_title">Your Total is: $<?php echo $total; ?></p><br>
+        <p class="cart_item_title" id="total">Your Total is: $<?php echo $total; ?></p><br>
         <form method="POST"><input type="submit" class="order" name="action" value="Confirm Order"></form>
        <?php }?>
      </section>
@@ -249,6 +256,16 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             }
             function closeNav() {
                 document.getElementById("sidenav").classList.remove("active");
+            }
+            function PriceUp(){
+
+            }
+            function PriceDown(){
+              
+            }
+            function total(){
+             let total=document.getElementById("total");
+             const ProductPrice=document.getElementById("price");
             }
             document.addEventListener('htmx:afterSwap', (event) => {
         if (event.detail.target.id === 'notification-area') {

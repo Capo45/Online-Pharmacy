@@ -1,13 +1,16 @@
 <?php
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
  session_start();
 
- $db_host = getenv('DB_HOST');
- $db_user = getenv('DB_USER');
- $db_password = getenv('DB_PASSWORD');
- $db_name = getenv('DB_NAME');
- $db_port = getenv('DB_PORT');  
- 
+ $config = require 'config.php';  
+$db_host = $config['DB_HOST'];
+$db_user = $config['DB_USER'];
+$db_password = $config['DB_PASSWORD'];
+$db_name = $config['DB_NAME'];
+$db_port = $config['DB_PORT']; 
+$conn="";
  $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
  function generateRandomUserId() {
   return random_int(100000, 999999); 
@@ -21,8 +24,10 @@ if(!isset($_SESSION['user_id'])){
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $cart_id = $_POST['id'];
-      $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id, Quantity) VALUES (?,?,'1') ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
-      $stmt->bind_param("ii", $cart_id,$user); 
+      $quantity=1;
+      $stmt = $conn->prepare("INSERT INTO cart (Product_id,user_id, Quantity) VALUES (?,?,?) ON DUPLICATE KEY UPDATE Quantity=Quantity+1;");
+      $stmt->bind_param("iii", $cart_id,$user,$quantity); 
+      $_SESSION['cart'][$cart_id]=$quantity;
       if($stmt->execute()){echo "<div class='added_alert'>Product added to cart successfully</div>";}
       $stmt->close();
       exit;
@@ -142,7 +147,7 @@ elseif (isset($_GET['sub_category'])) {
            padding-left:1rem;
            padding-top:1.5rem;
            padding-right:0.3rem;
-           color: #000000;"><?php $product_name = htmlspecialchars($item['Product_Name']); 
+           color: #000000;"><?php $product_name = $item['Product_Name']; 
                                           echo strlen($product_name) > 25 ? substr($product_name, 0, 25)
                                           . '...' : $product_name;?></a>
          <p class="product-description"><?php $product_description = htmlspecialchars($item['Brief_Description']); 

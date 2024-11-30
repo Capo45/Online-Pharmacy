@@ -3,11 +3,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
  session_start();
- $db_host = getenv('DB_HOST');
- $db_user = getenv('DB_USER');
- $db_password = getenv('DB_PASSWORD');
- $db_name = getenv('DB_NAME');
- $db_port = getenv('DB_PORT');  
+ $config = require 'config.php';  
+$db_host = $config['DB_HOST'];
+$db_user = $config['DB_USER'];
+$db_password = $config['DB_PASSWORD'];
+$db_name = $config['DB_NAME'];
+$db_port = $config['DB_PORT']; 
  $conn="";
 
 $conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
