@@ -1,34 +1,34 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
- session_start();
- $config = require 'config.php';  
+$config = require 'config.php';  
 $db_host = $config['DB_HOST'];
 $db_user = $config['DB_USER'];
 $db_password = $config['DB_PASSWORD'];
 $db_name = $config['DB_NAME'];
 $db_port = $config['DB_PORT']; 
- $conn="";
-
-$conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+$conn="";
+ $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+ 
+ ini_set('display_errors', 1);
+ ini_set('display_startup_errors', 1);
+ error_reporting(E_ALL);
+ session_start();
 
 $user=$_SESSION['user_id'];
 
- $details="SELECT * FROM receipts";
- $run = mysqli_query($conn,$details);
- $item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,p.Product_Description,p.Image_path, c.Quantity
+$details="SELECT * FROM receipts";
+$run = mysqli_query($conn,$details);
+$item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,p.Product_Description,p.Image_path, c.Quantity
  FROM products p 
  LEFT JOIN cart c ON p.Product_id = c.Product_id
  WHERE c.Quantity>=1 AND c.user_id=$user;";
- $result = mysqli_query($conn,$item);
+$result = mysqli_query($conn,$item);
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
     $clear_receipt = "DELETE FROM receipts WHERE user_id=$user;";
     $clear_cart = "DELETE FROM cart WHERE user_id=$user;";
     $reset_receipts = mysqli_query($conn,$clear_receipt);
     $reset_cart = mysqli_query($conn,$clear_cart);
-    header("Location:index.html");
+    header("Location:index.php");
       exit();
   }
  ?>
@@ -49,7 +49,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     <body>
         <section class="navigation_bar">
     <div class="sidenav" id="sidenav">
-    <div id="sidemenu_top"><a href="index.html"><img src="Images/Navigation bar/logo.png" id="side-logo"></a>  
+    <div id="sidemenu_top"><a href="index.php"><img src="Images/Navigation bar/logo.png" id="side-logo"></a>  
             <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
      <div class="categories">
         <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
@@ -101,7 +101,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     </div>
             <div class="strp">
                     <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
-                    <a href="index.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>   
+                    <a href="index.php"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>   
                         <form action="Search results page.php" method="GET">
                        <div class="searchbar_wrapper"><input type="search" placeholder="Search Item......." name="Searchbar"
                         class="searchbar">

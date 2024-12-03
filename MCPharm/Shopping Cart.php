@@ -1,28 +1,30 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+$config = require 'config.php';  
+$db_host = $config['DB_HOST'];
+$db_user = $config['DB_USER'];
+$db_password = $config['DB_PASSWORD'];
+$db_name = $config['DB_NAME'];
+$db_port = $config['DB_PORT']; 
+$conn="";
+ $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+ 
+ ini_set('display_errors', 1);
+ ini_set('display_startup_errors', 1);
+ error_reporting(E_ALL);
  session_start();
- $config = require 'config.php';  
- $db_host = $config['DB_HOST'];
- $db_user = $config['DB_USER'];
- $db_password = $config['DB_PASSWORD'];
- $db_name = $config['DB_NAME'];
- $db_port = $config['DB_PORT']; 
-$GLOBALS['conn']="";
-
-$GLOBALS['conn']=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+ 
 function generateRandomUserId() {
   return random_int(100000, 999999); 
 }
 
 if(!isset($_SESSION['user_id'])){
   $_SESSION['user_id']=generateRandomUserId(); 
-  $stmt = $mysqli->prepare("INSERT INTO users (user_id) VALUES (?)");
-  $stmt->bind_param("i", $_SESSION['user_id']);
+  $stmt = mysqli_prepare($GLOBALS['conn'], "INSERT INTO users (user_id) VALUES (?)");
+  mysqli_stmt_bind_param($stmt,"i", $_SESSION['user_id']);
+  mysqli_stmt_execute($stmt);
+  mysqli_stmt_close($stmt);
 }
 $user=$_SESSION['user_id'];
-  
 $item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,
 p.Product_Description,p.Image_path, c.Quantity 
       FROM products p 
@@ -33,31 +35,46 @@ $result = mysqli_query($GLOBALS['conn'],$item);
 if($_SERVER["REQUEST_METHOD"]=="POST"){
   $action=$_POST['action'];
   $p_id=$_POST['product_id'];
-  $quantity=$_POST['quantity'];
-
+  $total=$_POST['total'];
+  $old_price=$_POST['current-price'];
+  $price="SELECT p.Price FROM products p WHERE p.Product_id=$p_id;";
+  $res=mysqli_query($GLOBALS['conn'],$price);
+  $fetch=mysqli_fetch_assoc($res);
+  $prices=$fetch['Price'];
   switch($action){
     case'Confirm Order':{
       header("Location: Delivery Details.php");
       exit;
     }
     case'increment':{
-      $quantity++;
-      $NewQuantity= $quantity;
+      $_SESSION['cart'][$p_id]++;
+      $NewQuantity= $_SESSION['cart'][$p_id];  
+      $NewPrice=$NewQuantity*$prices;
+      $NewTotal=$total+($NewPrice-$old_price);
       $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
             mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $p_id, $user);
             mysqli_stmt_execute($stmt);
-            $_SESSION['cart'][$p_id]=$NewQuantity;
+            $total=$NewTotal;
+            echo "<li class='cart_item_price' id='price-$p_id' hx-swap-oob='true'>$$NewPrice</li>";
+            echo "<span name='quantity' id='quantity-$p_id' hx-swap-oob='true'>$NewQuantity</span>";
+            echo "<p class='cart_item_title' id='total' hx-swap-oob='true'>Your Total is: $$NewTotal</p>";
+            exit;
             mysqli_stmt_close($stmt);
       break;
     }
 
     case'decrement':{
-      $NewQuantity = max(1, $quantity - 1);
-      $NewQuantity;
+      $_SESSION['cart'][$p_id]--;
+      $NewQuantity = max(1, $_SESSION['cart'][$p_id]);
+      $NewPrice=$NewQuantity*$prices;
+      $NewTotal=$total-$prices;
       $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
             mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $p_id, $user);
             mysqli_stmt_execute($stmt);
-            $_SESSION['cart'][$p_id]=$NewQuantity;
+            echo "<li class='cart_item_price' id='price-$p_id' hx-swap-oob='true'>$$NewPrice</li>";
+            echo "<span name='quantity' id='quantity-$p_id' hx-swap-oob='true'>$NewQuantity</span>";
+            echo "<p class='cart_item_title' id='total' hx-swap-oob='true'>Your Total is: $$NewTotal</p>";
+            exit;
             mysqli_stmt_close($stmt);
             break;
       }
@@ -70,8 +87,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     break;
   }
   }
-  if(isset($NewQuantity)){echo $NewQuantity;exit;}else{exit;}
-   }
+   }if(!isset($total)){$total=0;}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -90,7 +106,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         <section class="navigation_bar">
    
     <div class="sidenav" id="sidenav">
-    <div id="sidemenu_top"><a href="index.html"><img src="Images/Navigation bar/logo.png" id="side-logo"></a> 
+    <div id="sidemenu_top"><a href="index.php"><img src="Images/Navigation bar/logo.png" id="side-logo"></a> 
             <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
      <div class="categories">
         <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
@@ -142,9 +158,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     </div>
             <div class="strp">
                     <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
-                    <a href="index.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>                  
+                    <a href="index.php"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>                  
       <form action="Search results page.php" method="GET">
-        <div class="searchbar_wrapper"><input type="search" placeholder="Search" name="Searchbar" class="searchbar">
+        <div class="searchbar_wrapper">
+          <input type="search" placeholder="Search" name="Searchbar" class="searchbar">
         </div>
       </form> 
          <a href="Shopping Cart.php"><img src="Images/Navigation bar/shopping cart icon.png"  id="cart_icon"></a>
@@ -154,10 +171,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
      <p class="product_title" style="margin-left: 1.5rem; margin-top: 8rem;">Shopping Cart</p>
      
      <section id="cartLayout">
-      <?php  $total=0;
-                while($cart_item=mysqli_fetch_assoc($result)) {
+      <?php 
+                foreach($result as $cart_item){
                   $prod=$cart_item['Product_id'];
-                  $quantity=$_SESSION['cart'][$prod];
+                  $quantity=$cart_item['Quantity'];
                   if($quantity>=1){
        ?>
         <div class="cart_items" name="cart_item" id="cart_item-<?php echo $prod; ?>" 
@@ -165,43 +182,34 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             <img src="<?php echo $cart_item['Image_path']; ?>" class="cart_item_image">
             <ul>
                 <a href="Product View page.php?product_id=<?php echo htmlspecialchars($prod); ?>">
-                  <li class="cart_item_title"><?php $product_name = htmlspecialchars($cart_item['Product_Name']); 
+                  <li class="cart_item_title"><?php $product_name = $cart_item['Product_Name']; 
                                           echo strlen($product_name) > 25 ? substr($product_name, 0, 25)
                                           . '...' : $product_name; ?></li></a>
-                <li class="cart_item_description"><?php $product_desc = htmlspecialchars($cart_item['Brief_Description']); 
+                <li class="cart_item_description"><?php $product_desc = $cart_item['Brief_Description']; 
                                           echo strlen($product_desc) > 25 ? substr($product_desc, 0, 25)
                                           . '...' : $product_desc; ?></li>
-                <li class="cart_item_price" id="price">
-                  $<?php $price=(int)$cart_item['Price'] * (int)$quantity; echo $price;
-                   $total=$total+$price;?>
+                <li class="cart_item_price" id="price-<?php echo $prod; ?>">
+                  $<?php $price=(float)$cart_item['Price'] * (float)$quantity;$total=$total+$price; echo $price;
+                   ?>
                 </li>
-
                 <li>
                   <button hx-post="" hx-target="#quantity-<?php echo $prod; ?>" hx-swap="innerHTML"
                   hx-vals='{
-                  "action":"decrement",
-                  "product_id": <?php echo json_encode($prod); ?>,
-                  "quantity":<?php echo json_encode($quantity);?>}'
+                  "action":"decrement", "product_id": <?php echo json_encode($prod); ?>,"total":<?php echo json_encode($total);?>}'
                    class="cart_buttons" id="decrement">-</button>
-                  <span name="quantity" id="quantity-<?php echo $prod; ?>"
-                  style="font-size: 1.5rem; padding:0.5rem; color:#9c0707;">
-                   <?php echo $_SESSION['cart'][$prod];?>
+                  <span name="quantity" id="quantity-<?php echo $prod; ?>">
+                   <?php echo $quantity;?>
                   </span>
                   <button hx-post="" hx-target="#quantity-<?php echo $prod; ?>" hx-swap="innerHTML"
                   hx-vals='{
                   "action":"increment",
-                  "product_id": <?php echo json_encode($prod); ?>,
-                  "quantity":<?php echo json_encode($quantity);?>}'
-                   class="cart_buttons"
-                  id="increment">+</button>
-                  <button 
-                  hx-post=""
-                  hx-vals='{
-                  "action": "trash",
-                  "product_id":<?php echo json_encode($prod);?>,
-                  "quantity":<?php echo json_encode($quantity);?>}'
-                  class="cart_buttons" id="trash">
-                  <img src="Images/trash.png " style="width: 1rem;height:1rem;"></button></li>
+                  "product_id": <?php echo json_encode($prod); ?>,"total":<?php echo json_encode($total);?>,"current-price":<?php echo json_encode($price); ?>}' class="cart_buttons" id="increment">+
+                  </button>
+                  <button hx-post="" hx-vals='{"action": "trash","product_id":<?php echo json_encode($prod);?>}'
+                    class="cart_buttons" id="trash">
+                   <img src="Images/trash.png " style="width: 1rem;height:1rem;">
+                  </button>
+                </li>
            </ul>
         </div>
         <?php  }}
@@ -257,23 +265,13 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             function closeNav() {
                 document.getElementById("sidenav").classList.remove("active");
             }
-            function PriceUp(){
-
-            }
-            function PriceDown(){
-              
-            }
-            function total(){
-             let total=document.getElementById("total");
-             const ProductPrice=document.getElementById("price");
-            }
             document.addEventListener('htmx:afterSwap', (event) => {
-        if (event.detail.target.id === 'notification-area') {
-            const notification = event.detail.target.querySelector('.added_alert');
-            if (notification) {
+            if (event.detail.target.id === 'notification-area') {
+               const notification = event.detail.target.querySelector('.added_alert');
+               if (notification) {
                 setTimeout(() => {
                     notification.remove();
-                }, 3000);}
+                   }, 3000);}
             }
               });
         </script>

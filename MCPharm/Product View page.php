@@ -1,17 +1,18 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
- session_start();
- $config = require 'config.php';  
+$config = require 'config.php';  
 $db_host = $config['DB_HOST'];
 $db_user = $config['DB_USER'];
 $db_password = $config['DB_PASSWORD'];
 $db_name = $config['DB_NAME'];
 $db_port = $config['DB_PORT']; 
 $conn="";
-
-$conn=new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+ $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+ 
+ ini_set('display_errors', 1);
+ ini_set('display_startup_errors', 1);
+ error_reporting(E_ALL);
+ session_start();
+ 
 function generateRandomUserId() {
   return random_int(100000, 999999); 
 }
@@ -78,7 +79,7 @@ if(!isset($_SESSION['user_id'])){
 
         <section class="navigation_bar">
     <div class="sidenav" id="sidenav">
-        <div id="sidemenu_top"><img src="Images/Navigation bar/logo.png" id="side-logo"> 
+        <div id="sidemenu_top"><a href="index.php"><img src="Images/Navigation bar/logo.png" id="side-logo"></a> 
             <button id="close_sidenav" onclick="closeNav()"><img src="Images/Navigation bar/exit.png"></button></div>
      <div class="categories">
         <label for="check1"><img src="Images/Navigation bar/down.png" id="arrow"></label>
@@ -130,7 +131,7 @@ if(!isset($_SESSION['user_id'])){
     </div>
     <div class="strp">
       <button id="sidemenu" onclick="openNav()"><img src="Images/Navigation bar/menu.png" id="sidemenu_image"></button>
-      <a href="index.html"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>      
+      <a href="index.php"><img src="Images/Navigation bar/logo.png" style="width: 3.938rem;height: 3rem; padding-left: 2rem; padding-top: 0;"></a>      
                     
        <form action="Search results page.php" method="GET">
          <div class="searchbar_wrapper">
@@ -149,22 +150,16 @@ if(!isset($_SESSION['user_id'])){
             <div class="product_layout">
               <img src="<?php echo $row["Image_path"];?>" class="product_image">
                <div>
-                <ul class="product_description" style="width:40rem;">
+                <ul class="product_description">
                   <li class="product_title"><?php echo htmlspecialchars($row["Product_Name"]);?></li>
-                  <li style="word-break: break-all; overflow-wrap: break-word;
-                  word-wrap: break-word; text-align:center;">
-                  <?php echo htmlspecialchars($row["Brief_Description"]);?></li>
-                  <li style="color: #9c0707; font-size: 2rem;">$ <?php echo htmlspecialchars($row["Price"]);?></li>
-                   <li><label style="font-size: 2.5rem;color:#9c0707;">Quantity: </label>
+                  <li id="breif_description">
+                    <?php echo htmlspecialchars($row["Brief_Description"]);?></li>
+                  <li style="color: #9c0707; font-size: 2rem; padding-left:1rem;">$ <?php echo htmlspecialchars($row["Price"]);?></li>
+                   <li><label style="font-size: 2.5rem;color:#9c0707;padding:1rem;">Quantity: </label>
                   <button class="cart_buttons" id="decrement" onclick="decrement()">-</button>
-                  <span name="quantity" id="quantity"
-                        style="font-size: 1.5rem; 
-                        padding:0.5rem; 
-                        color:#9c0707;">1</span>
-                        <input type="hidden" id="passquantity" name="passquantity" value="1">
+                  <span name="quantity" id="quantity">1</span>
+                  <input type="hidden" id="passquantity" name="passquantity" value="1">
                   <button class="cart_buttons" id="increment" onclick="increment()">+</button>
-                  <?php ?>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
                     <button 
                     hx-post="" 
                     hx-include="#passquantity"
@@ -180,7 +175,7 @@ if(!isset($_SESSION['user_id'])){
             </div>
         <div class="detailed_description">
               <p id="details">Description</p>
-              <p ><?php echo htmlspecialchars($row["Product_Description"]);?></p>
+              <p class=""><?php echo htmlspecialchars($row["Product_Description"]);?></p>
             </div>
         </section>    
         <?php
