@@ -6,25 +6,21 @@ $db_password = $config['DB_PASSWORD'];
 $db_name = $config['DB_NAME'];
 $db_port = $config['DB_PORT']; 
 $conn="";
- $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+$conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
  
- ini_set('display_errors', 1);
- ini_set('display_startup_errors', 1);
- error_reporting(E_ALL);
- session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+session_start();
  
 function generateRandomUserId() {
   return random_int(100000, 999999); 
 }
 
 if(!isset($_SESSION['user_id'])){
-  $_SESSION['user_id']=generateRandomUserId(); 
-  $stmt = mysqli_prepare($GLOBALS['conn'], "INSERT INTO users (user_id) VALUES (?)");
-  mysqli_stmt_bind_param($stmt,"i", $_SESSION['user_id']);
-  mysqli_stmt_execute($stmt);
-  mysqli_stmt_close($stmt);
-}
-$user=$_SESSION['user_id'];
+  $_SESSION['user_id']=generateRandomUserId();
+}$user=$_SESSION['user_id'];
+
 $item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,
 p.Product_Description,p.Image_path, c.Quantity 
       FROM products p 
@@ -35,31 +31,39 @@ $result = mysqli_query($GLOBALS['conn'],$item);
 if($_SERVER["REQUEST_METHOD"]=="POST"){
   $action=$_POST['action'];
   $p_id=$_POST['product_id'];
-  $total=$_POST['total'];
-  $old_price=$_POST['current-price'];
+  $total=$_POST['passedtotal'];
   $price="SELECT p.Price FROM products p WHERE p.Product_id=$p_id;";
   $res=mysqli_query($GLOBALS['conn'],$price);
   $fetch=mysqli_fetch_assoc($res);
   $prices=$fetch['Price'];
+  
   switch($action){
     case'Confirm Order':{
       header("Location: Delivery Details.php");
       exit;
     }
     case'increment':{
+      $OldPrice=$prices*$_SESSION['cart'][$p_id];
       $_SESSION['cart'][$p_id]++;
       $NewQuantity= $_SESSION['cart'][$p_id];  
       $NewPrice=$NewQuantity*$prices;
-      $NewTotal=$total+($NewPrice-$old_price);
+
       $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
             mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $p_id, $user);
             mysqli_stmt_execute($stmt);
-            $total=$NewTotal;
             echo "<li class='cart_item_price' id='price-$p_id' hx-swap-oob='true'>$$NewPrice</li>";
             echo "<span name='quantity' id='quantity-$p_id' hx-swap-oob='true'>$NewQuantity</span>";
-            echo "<p class='cart_item_title' id='total' hx-swap-oob='true'>Your Total is: $$NewTotal</p>";
-            exit;
             mysqli_stmt_close($stmt);
+      $stmt = mysqli_prepare($GLOBALS['conn'], "SELECT SUM(p.Price * c.Quantity) as cart_total 
+        FROM cart c 
+        JOIN products p ON c.Product_id = p.Product_id 
+        WHERE c.user_id = ?");
+            mysqli_stmt_bind_param($stmt,"i",$user);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $total_row = mysqli_fetch_assoc($result);
+            $NewTotal = $total_row['cart_total'];
+            echo "<span class='cart_item_title' id='total' hx-swap-oob='true'>Your Total is: $$NewTotal</span>";exit;
       break;
     }
 
@@ -67,13 +71,12 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
       $_SESSION['cart'][$p_id]--;
       $NewQuantity = max(1, $_SESSION['cart'][$p_id]);
       $NewPrice=$NewQuantity*$prices;
-      $NewTotal=$total-$prices;
       $stmt = mysqli_prepare($GLOBALS['conn'], "UPDATE cart SET Quantity = ? WHERE Product_id = ? AND user_id = ?");
             mysqli_stmt_bind_param($stmt, 'iii', $NewQuantity, $p_id, $user);
             mysqli_stmt_execute($stmt);
             echo "<li class='cart_item_price' id='price-$p_id' hx-swap-oob='true'>$$NewPrice</li>";
             echo "<span name='quantity' id='quantity-$p_id' hx-swap-oob='true'>$NewQuantity</span>";
-            echo "<p class='cart_item_title' id='total' hx-swap-oob='true'>Your Total is: $$NewTotal</p>";
+            echo "<p class='cart_item_title' id='total' hx-swap-oob='true'>Your Total is: $</p>";
             exit;
             mysqli_stmt_close($stmt);
             break;
@@ -83,11 +86,13 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     $stmt = mysqli_prepare($GLOBALS['conn'], "DELETE FROM cart WHERE Product_id = ? AND user_id = ?;");
     mysqli_stmt_bind_param($stmt, 'ii', $p_id, $user);
     mysqli_stmt_execute($stmt);
+    if(isset($NewQuantity)){echo $NewQuantity; exit;}
+    else{exit;}
     mysqli_stmt_close($stmt);
     break;
   }
   }
-   }if(!isset($total)){$total=0;}
+   }
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -171,7 +176,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
      <p class="product_title" style="margin-left: 1.5rem; margin-top: 8rem;">Shopping Cart</p>
      
      <section id="cartLayout">
-      <?php 
+      <?php if(!isset($total)) {$total=0;}
                 foreach($result as $cart_item){
                   $prod=$cart_item['Product_id'];
                   $quantity=$cart_item['Quantity'];
@@ -189,21 +194,23 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                                           echo strlen($product_desc) > 25 ? substr($product_desc, 0, 25)
                                           . '...' : $product_desc; ?></li>
                 <li class="cart_item_price" id="price-<?php echo $prod; ?>">
-                  $<?php $price=(float)$cart_item['Price'] * (float)$quantity;$total=$total+$price; echo $price;
-                   ?>
+                  $<?php $price=(float)$cart_item['Price'] * (float)$quantity;echo $price;
+                   $total = $total + $price;?>
                 </li>
                 <li>
                   <button hx-post="" hx-target="#quantity-<?php echo $prod; ?>" hx-swap="innerHTML"
                   hx-vals='{
-                  "action":"decrement", "product_id": <?php echo json_encode($prod); ?>,"total":<?php echo json_encode($total);?>}'
+                  "action":"decrement", "product_id": <?php echo json_encode($prod); ?>}'
                    class="cart_buttons" id="decrement">-</button>
                   <span name="quantity" id="quantity-<?php echo $prod; ?>">
                    <?php echo $quantity;?>
                   </span>
+                  <input type="hidden" id="passedtotal" value="<?php echo htmlspecialchars($total); ?>">
                   <button hx-post="" hx-target="#quantity-<?php echo $prod; ?>" hx-swap="innerHTML"
                   hx-vals='{
                   "action":"increment",
-                  "product_id": <?php echo json_encode($prod); ?>,"total":<?php echo json_encode($total);?>,"current-price":<?php echo json_encode($price); ?>}' class="cart_buttons" id="increment">+
+                  "product_id": <?php echo json_encode($prod); ?>,
+                  "passedtotal":<?php echo json_encode($total);?>}' class="cart_buttons" id="increment">+
                   </button>
                   <button hx-post="" hx-vals='{"action": "trash","product_id":<?php echo json_encode($prod);?>}'
                     class="cart_buttons" id="trash">
@@ -212,10 +219,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                 </li>
            </ul>
         </div>
-        <?php  }}
+        <?php  }}$_SESSION['total']=$total;
          if($result->num_rows>=1){
         ?>
-        <p class="cart_item_title" id="total">Your Total is: $<?php echo $total; ?></p><br>
+        <span class="cart_item_title" id="total" value="<?php echo $total;?>">Your Total is: $<?php echo $total; ?></span><br>
         <form method="POST"><input type="submit" class="order" name="action" value="Confirm Order"></form>
        <?php }?>
      </section>
@@ -274,6 +281,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                    }, 3000);}
             }
               });
-        </script>
+          </script>
     </body>
 </html>

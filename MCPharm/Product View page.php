@@ -18,12 +18,8 @@ function generateRandomUserId() {
 }
 if(!isset($_SESSION['user_id'])){
   $_SESSION['user_id']=generateRandomUserId();
-  $stmt = mysqli_prepare($conn,"INSERT INTO users (user_id) VALUES (?)");
-  mysqli_stmt_bind_param($stmt,"i", $_SESSION['user_id']);
-  mysqli_stmt_execute($stmt);
-  mysqli_stmt_close($stmt);
-} 
- $user=$_SESSION['user_id'];
+}$user=$_SESSION['user_id'];
+
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $action = $_POST['action'];
     $cart_id = $_POST['product_id'];

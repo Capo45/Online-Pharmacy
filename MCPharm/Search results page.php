@@ -6,7 +6,7 @@ $db_password = $config['DB_PASSWORD'];
 $db_name = $config['DB_NAME'];
 $db_port = $config['DB_PORT']; 
 $conn="";
- $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+$conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
  
  ini_set('display_errors', 1);
  ini_set('display_startup_errors', 1);
@@ -19,11 +19,9 @@ function generateRandomUserId() {
 
 if(!isset($_SESSION['user_id'])){
   $_SESSION['user_id']=generateRandomUserId();
-  $stmt = $mysqli->prepare("INSERT INTO users (user_id) VALUES (?)");
-  $stmt->bind_param("i", $_SESSION['user_id']);
 }$user=$_SESSION['user_id'];
- try {
 
+ try {
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $cart_id = $_POST['id'];
       $quantity=1;
