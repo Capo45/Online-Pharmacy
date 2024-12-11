@@ -13,9 +13,11 @@ $conn="";
  error_reporting(E_ALL);
  session_start();
 
-$user=$_SESSION['user_id'];
+ if(!isset($_SESSION['user_id'])){
+  $_SESSION['user_id']=generateRandomUserId();
+}$user=$_SESSION['user_id'];
 
-$details="SELECT * FROM receipts";
+$details="SELECT * FROM receipts r WHERE r.user_id=$user;";
 $run = mysqli_query($conn,$details);
 $item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,p.Product_Description,p.Image_path, c.Quantity
  FROM products p 
@@ -111,7 +113,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             </div>
      </section>
 
-       <section style="margin-top: 10rem; margin-left: 25rem; margin-right: 25rem;">
+       <section id="order_received">
         <h1>YOUR ORDER HAS BEEN RECEIVED!</h1><br><br>
        </section><form method="POST"><?php if($run->num_rows>=1){$info=mysqli_fetch_assoc($run); ?>
 

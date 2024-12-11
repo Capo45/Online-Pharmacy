@@ -13,7 +13,9 @@ $conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
  error_reporting(E_ALL);
  session_start(); 
 
-$user=$_SESSION['user_id'];
+ if(!isset($_SESSION['user_id'])){
+  $_SESSION['user_id']=generateRandomUserId();
+}$user=$_SESSION['user_id'];
 
 $item="SELECT p.Product_id, p.Product_Name,p.Brief_Description, p.Price,p.Product_Description,p.Image_path, c.Quantity , c.user_id
  FROM products p 
@@ -33,8 +35,8 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     $email=$_POST['email'];
     $additional_comments=$_POST['comments'];
     $receipt_id=random_int(100000, 999999);
-    $bill="INSERT INTO receipts(Receipt_id,Firstname,Surname,Address_1,Address_2,Postal_code,Floor,Apartment,Phone,Email,Additional_comments)
-    VALUES('$receipt_id','$name','$surname','$address_1','$address_2','$postal_code','$floor','$apartment','$phone','$email','$additional_comments');";
+    $bill="INSERT INTO receipts(Receipt_id,Firstname,Surname,Address_1,Address_2,Postal_code,Floor,Apartment,Phone,Email,Additional_comments,user_id)
+    VALUES('$receipt_id','$name','$surname','$address_1','$address_2','$postal_code','$floor','$apartment','$phone','$email','$additional_comments','$user');";
     $generate=mysqli_query($conn,$bill);
     header("Location:Order received.php");
     exit();
@@ -121,6 +123,19 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
      </section>
 
    <section class="details_section">
+   <div class="details_container" style="animation: bills 2s;"><p class="product_title" style="margin-left: 1rem;">Items</p>
+   <div style="background-color: #ec4747a2; border-radius:0.5rem;border-style:none;padding:0.5rem"><?php $total=0;
+     while($items=mysqli_fetch_assoc($result)){
+        $product_name=$items['Product_Name'];
+        $quantity=$items['Quantity'];
+        $price=(int)$items['Price'] * (int)$items['Quantity'];
+        $total=$total+$price;
+   ?>
+
+   <p class="bill"><?php echo $quantity; echo"X "; echo $product_name; echo ":   $"; echo $price;?></p>  
+   <?php } ?></div>
+   <p class="bill" id="total">Your total is: $<?php echo $total ?></p>
+   </div>
    <form method="POST">
    <div class="details_container" style="animation: details 1s;">
     <p class="product_title" style="margin-left: 1rem;">Delivery Details</p>
@@ -140,20 +155,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
     <input class="place_order" type="submit" value="Place Order">
    </div></form>
-
-   <div class="details_container" style="animation: bills 2s;"><p class="product_title" style="margin-left: 1rem;">Items</p>
-   <div style="background-color: #ec4747a2; border-radius:0.5rem;border-style:none;padding:0.5rem"><?php $total=0;
-     while($items=mysqli_fetch_assoc($result)){
-        $product_name=$items['Product_Name'];
-        $quantity=$items['Quantity'];
-        $price=(int)$items['Price'] * (int)$items['Quantity'];
-        $total=$total+$price;
-   ?>
-
-   <p class="bill"><?php echo $quantity; echo"X "; echo $product_name; echo ":   $"; echo $price;?></p>  
-   <?php } ?></div>
-   <p class="bill" id="total">Your total is: $<?php echo $total ?></p>
-   </div>
    </section>
 
   <footer>

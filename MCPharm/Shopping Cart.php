@@ -31,7 +31,6 @@ $result = mysqli_query($GLOBALS['conn'],$item);
 if($_SERVER["REQUEST_METHOD"]=="POST"){
   $action=$_POST['action'];
   $p_id=$_POST['product_id'];
-  $total=$_POST['passedtotal'];
   $price="SELECT p.Price FROM products p WHERE p.Product_id=$p_id;";
   $res=mysqli_query($GLOBALS['conn'],$price);
   $fetch=mysqli_fetch_assoc($res);
@@ -76,9 +75,17 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             mysqli_stmt_execute($stmt);
             echo "<li class='cart_item_price' id='price-$p_id' hx-swap-oob='true'>$$NewPrice</li>";
             echo "<span name='quantity' id='quantity-$p_id' hx-swap-oob='true'>$NewQuantity</span>";
-            echo "<p class='cart_item_title' id='total' hx-swap-oob='true'>Your Total is: $</p>";
-            exit;
             mysqli_stmt_close($stmt);
+            $stmt = mysqli_prepare($GLOBALS['conn'], "SELECT SUM(p.Price * c.Quantity) as cart_total 
+            FROM cart c 
+            JOIN products p ON c.Product_id = p.Product_id 
+            WHERE c.user_id = ?");
+                mysqli_stmt_bind_param($stmt,"i",$user);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $total_row = mysqli_fetch_assoc($result);
+                $NewTotal = $total_row['cart_total'];
+                echo "<span class='cart_item_title' id='total' hx-swap-oob='true'>Your Total is: $$NewTotal</span>";exit;
             break;
       }
 
@@ -223,7 +230,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
          if($result->num_rows>=1){
         ?>
         <span class="cart_item_title" id="total" value="<?php echo $total;?>">Your Total is: $<?php echo $total; ?></span><br>
-        <form method="POST"><input type="submit" class="order" name="action" value="Confirm Order"></form>
+        <form method="POST">
+          <input type="submit" class="order" name="action" value="Confirm Order">
+          <input type="hidden" name="product_id" value="00000">      
+      </form>
        <?php }?>
      </section>
 
